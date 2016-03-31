@@ -1,3 +1,5 @@
+// Patron v0.3
+
 #ifndef PAT_H
 #define PAT_H
 
@@ -12,11 +14,12 @@
 class Patron
 {
 private:
-	const std::string DATE_PATTERN = R"(^[1-9][0-2]{0,1}/[0-3]{0,1}[0-9]/(?:19|20)[0-9]{2}$)";
-	const std::string MONEY_PATTERN = R"(^\d{1,8}(\.{1}\d+){0,1}$)";
+	const std::string DATE_PATTERN = R"(^([1][0-2]|[0]?[1-9])/([1-2][0-9]|3[0-2]|[0]?[1-9])/((?:19|20)[0-9]{2})$)";
+	const std::string MONEY_PATTERN = R"(^[0-9]{1,8}(\.[0-9]{1,8})?$)";
 	const std::string ADDRESS_PATTERN = R"([a-zA-Z0-9_ ]{3,50}$)";
 	const std::string NAME_PATTERN = R"(^[A-Z][a-zA-Z ]{3,20}$)";
 	const std::string ID_PATTERN = R"(^[0-9]+$)";
+	const size_t NUM_VAR = 7;
 
 	std::string _firstName;
 	std::string _LastName;
@@ -25,6 +28,8 @@ private:
 	std::string _joinDate;
 	int _outstandingFees;
 	size_t _ID;
+
+	std::string _currentDate;
 
 	const std::string CurrentDateTime();
 	void SetFirstName( std::string );
@@ -40,6 +45,7 @@ public:
 	~Patron();
 	void SetAddress( std::string );
 	void SetFees( std::string );
+	void SetCurrentDate( std::string );
 	const std::string& GetFirstName();
 	const std::string& GetLastName();
 	const std::string& GetAddress();
@@ -63,6 +69,7 @@ Patron::Patron()
 	_joinDate = CurrentDateTime();
 	_outstandingFees = 0;
 	_ID = 0;
+	_currentDate = "";
 }
 
 
@@ -81,6 +88,8 @@ Patron::Patron( std::string firstName, std::string lastName, std::string address
 	SetID( ID );
 
 	_outstandingFees = 0;
+
+	_currentDate = "";
 }
 
 
@@ -180,6 +189,21 @@ void Patron::SetID( std::string ID )
 }
 
 
+void Patron::SetCurrentDate( std::string currentDate )
+{
+	if ( currentDate == "" ) { _currentDate = currentDate;  return; }
+
+	if ( std::regex_match( currentDate, std::regex( DATE_PATTERN ) ) )
+	{
+		_currentDate = currentDate;
+	}
+	else
+	{
+		throw std::logic_error( "Bad argument for current date" );
+	}
+}
+
+
 const std::string Patron::CurrentDateTime() {
 	time_t     now = time( 0 );
 	struct tm  tstruct;
@@ -237,7 +261,7 @@ bool Patron::IsMinor()
 {
 	std::vector<std::string> splitBirth;
 	std::vector<std::string> splitNow;
-	std::string now = CurrentDateTime();
+	std::string now = ( _currentDate == "" ) ? CurrentDateTime() : _currentDate;
 
 	splitBirth = Split( &_birthDate[0], '/' );
 	splitNow = Split( &now[0], '/' );
@@ -296,6 +320,8 @@ void Patron::Read( std::istream& in )
 
 	try
 	{
+		if ( splitVector.size() < NUM_VAR ) { throw std::logic_error( "Error loading from patron file" ); }
+
 		SetFirstName( splitVector[0] );
 		SetLastName( splitVector[1] );
 		SetAddress( splitVector[2] );
