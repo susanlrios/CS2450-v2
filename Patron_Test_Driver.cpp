@@ -56,41 +56,41 @@ int main(int argc, char* argv[])
 
 
 
-	//fileOut.open( fileName );
+	fileOut.open( fileName );
 
-	//if ( !fileOut.is_open() )
-	//{
-	//	std::cout << "Error: could not create file" << fileName << std::endl;
-	//}
-	//else
-	//{
-	//	fileOut << "First Name,Last Name,Address,Birth Date,Join Date,Outstanding Balance,ID" << std::endl;
+	if ( !fileOut.is_open() )
+	{
+		std::cout << "Error: could not create file" << fileName << std::endl;
+	}
+	else
+	{
+		fileOut << "First Name,Last Name,Address,Birth Date,Join Date,Outstanding Balance,ID" << std::endl;
 
-	//	for each ( Patron* patron in patrons )
-	//	{
-	//		patron->Write( fileOut );
-	//	}
-	//}
+		for each ( Patron* patron in patrons )
+		{
+			patron->Write( fileOut );
+		}
+	}
 
-	//fileOut.close();
+	fileOut.close();
 
-	//fileIn.open( fileName );
+	fileIn.open( fileName );
 
-	//if ( !fileIn.is_open() )
-	//{
-	//	std::cout << "Error: could not open file" << fileName << std::endl;
-	//}
-	//else
-	//{
-	//	getline( fileIn, input );
+	if ( !fileIn.is_open() )
+	{
+		std::cout << "Error: could not open file" << fileName << std::endl;
+	}
+	else
+	{
+		getline( fileIn, input );
 
-	//	for each ( Patron* patron in patrons )
-	//	{
-	//		patron->Read( fileIn );
-	//	}
-	//}
-	//
-	//fileIn.close();
+		for each ( Patron* patron in patrons )
+		{
+			patron->Read( fileIn );
+		}
+	}
+	
+	fileIn.close();
 
 	std::cout << patrons[0]->GetFirstName() << " " << patrons[0]->GetLastName() << std::endl <<
 		patrons[0]->GetAddress() << std::endl <<
@@ -100,24 +100,30 @@ int main(int argc, char* argv[])
 
 	std::cout << "\nPlease enter the current date: ";
 
-	try
+	do
 	{
-		do {
+		try
+		{
 			getline( std::cin, input );
-		} while ( input == "" );
 
-		patrons[0]->SetCurrentDate( input );
-	}
-	catch ( const std::exception& error )
-	{
-		std::cout << error.what();
+			Patron::SetCurrentDate( input );
+		}
+		catch ( const std::exception& error )
+		{
+			std::cout << error.what() << std::endl;
 
-		patrons[0]->SetCurrentDate( "" );
-	}
+			input = "-1";
+		}
+	} while ( input == "-1" );
+
 
 	if ( patrons[0]->IsMinor() )
 	{
-		std::cout << "They are a Minor" << std::endl;
+		std::cout << "They are a minor" << std::endl;
+	}
+	else
+	{
+		std::cout << "They are not minor" << std::endl;
 	}
 
 	for each ( Patron* patron in patrons )
