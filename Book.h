@@ -19,30 +19,31 @@ private:
 	int _ISBN;
 public:
 	Book();
-	Book(std::string, std::string, std::string, int);
+	Book( std::string, std::string, std::string, int );
 	~Book();
-	void checkOut(Patron*);
+	void checkOut( Patron* );
 	void checkIn();
 	void printInfo();
+	const std::string& GetTitle();
 };
 
 Book::Book() {}
 
 
-Book::Book(std::string bookTitle, std::string bookAuthor, std::string bookType, int bookISBNNumber) {
+Book::Book( std::string bookTitle, std::string bookAuthor, std::string bookType, int bookISBNNumber ) {
 	_title = bookTitle;
 	_author = bookAuthor;
-	std::transform(bookType.begin(), bookType.end(), bookType.begin(), ::tolower);
-	if (bookType == "adult") {
+	std::transform( bookType.begin(), bookType.end(), bookType.begin(), ::tolower );
+	if ( bookType == "adult" ) {
 		_type = 1;
 	}
-	else if (bookType == "child") {
+	else if ( bookType == "child" ) {
 		_type = 2;
 	}
-	else if (bookType == "video") {
+	else if ( bookType == "video" ) {
 		_type = 3;
 	}
-	else if (bookType == "audio") {
+	else if ( bookType == "audio" ) {
 		_type = 4;
 	}
 	else {
@@ -53,17 +54,17 @@ Book::Book(std::string bookTitle, std::string bookAuthor, std::string bookType, 
 
 Book::~Book() {}
 
-void Book::checkOut(Patron* patronName) {
-	if (_checkedOutStatus == false) {
+void Book::checkOut( Patron* patronName ) {
+	if ( _checkedOutStatus == false ) {
 		_patronCheckOut = patronName;
 		std::time_t rawtime;
 		std::tm* timeinfo;
 		char buffer[80];
 
-		std::time(&rawtime);
-		timeinfo = std::localtime(&rawtime);
+		std::time( &rawtime );
+		timeinfo = std::localtime( &rawtime );
 
-		std::strftime(buffer, 80, "%m/%d/%Y", timeinfo);
+		std::strftime( buffer, 80, "%m/%d/%Y", timeinfo );
 		_dateCheckedOut = buffer;
 		_checkedOutStatus = true;
 	}
@@ -75,7 +76,7 @@ void Book::checkOut(Patron* patronName) {
 }
 
 void Book::checkIn() {
-	if (_checkedOutStatus == true) {
+	if ( _checkedOutStatus == true ) {
 		_patronCheckOut = nullptr;
 		_dateCheckedOut = "";
 		_checkedOutStatus = false;
@@ -86,16 +87,25 @@ void Book::checkIn() {
 }
 
 void Book::printInfo() {
-	if (_checkedOutStatus == false) {
+	if ( _checkedOutStatus == false ) {
 		std::cout << "Title: " << _title << ' ' << "Author: " << _author << ' ';
 		std::cout << "Date media checked out: " << _dateCheckedOut << ' ';
 		std::cout << "ISBN #: " << _ISBN << ' ' << "Person who has checked it out: " << "Nobody" << ' ' << std::endl;
 	}
-	else if(_checkedOutStatus = true) {
+	else if ( _checkedOutStatus = true ) {
 		std::cout << "Title: " << _title << ' ' << "Author: " << _author << ' ';
 		std::cout << "Date media checked out: " << _dateCheckedOut << ' ';
 		std::cout << "ISBN #: " << _ISBN << ' ' << "Patron who has checked it out: " << _patronCheckOut->GetFirstName();
 		std::cout << ' ' << _patronCheckOut->GetLastName() << "With ID: " << _patronCheckOut->GetID() << std::endl;
 	}
 }
+
+
+// Added by Chris
+const std::string& Book::GetTitle()
+{
+	return _title;
+}
+
+
 #endif
