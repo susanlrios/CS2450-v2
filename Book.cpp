@@ -1,10 +1,11 @@
-//The Book class v0.2
-#include <sstream>
-#include <vector>
-#include "Book.h"
-
+//The Book class v0.3
 #ifndef BOOK_CPP
 #define BOOK_CPP
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include "Book.h"
 
 Book::Book() {}
 
@@ -46,7 +47,6 @@ bool Book::checkIn() {
 
 void Book::setBookInfo(std::string readlineFromDatabase) {
 	std::string buildString;
-	int buildISBN = 0;
 	int buildStringInt = 0;
 
 	for (int read = 0; read < readlineFromDatabase.length(); read++) {
@@ -83,12 +83,16 @@ void Book::setBookInfo(std::string readlineFromDatabase) {
 		else {
 			buildString = buildString + readlineFromDatabase[read];
 			if (read == readlineFromDatabase.size() - 1) {
-				_ISBN = buildISBN;
+				try {
+					_ISBN = stoi(buildString);
+				}
+				catch (std::exception e) {
+					std::cout << "Failed to convert ISBN, ISBN is being set to 0." << std::endl;
+					_ISBN = 0;
+				}
 			}
 		}
 	}
-	
-	std::string test;
 }
 
 const std::string Book::GetTitle() {
