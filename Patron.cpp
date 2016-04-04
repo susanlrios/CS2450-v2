@@ -153,10 +153,11 @@ void Patron::SetCurrentDate( std::string currentDate )
 }
 
 
-const std::string Patron::CurrentDateTime() {
-	time_t     now = time( 0 );
-	struct tm  tstruct;
-	char       buffer[80];
+const std::string Patron::CurrentDateTime() 
+{
+	time_t now = time( 0 );
+	struct tm tstruct;
+	char buffer[80];
 	tstruct = *localtime( &now );
 	strftime( buffer, sizeof( buffer ), "%m/%d/%Y", &tstruct );
 
@@ -255,7 +256,7 @@ void Patron::Write( std::ostream& out )
 }
 
 
-void Patron::Read( std::istream& in )
+bool Patron::Read( std::istream& in )
 {
 	std::vector<std::string> splitVector;
 	std::string lineInput;
@@ -265,6 +266,10 @@ void Patron::Read( std::istream& in )
 	if ( lineInput != "" )
 	{
 		splitVector = Split( &lineInput[0], ',' );
+	}
+	else
+	{
+		return false;
 	}
 
 	try
@@ -284,6 +289,8 @@ void Patron::Read( std::istream& in )
 		//std::string errorMessage = "Could not read patron from the file: " + error.what();
 		throw std::logic_error( error.what() );
 	}
+
+	return true;
 }
 
 

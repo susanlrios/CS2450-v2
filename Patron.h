@@ -1,4 +1,4 @@
-// Patron v0.4
+// Patron v0.5
 
 #ifndef PAT_H
 #define PAT_H
@@ -16,7 +16,7 @@ class Patron
 private:
 	const std::string MONEY_PATTERN = R"(^[0-9]{1,8}(\.[0-9]{1,8})?$)";
 	const std::string ADDRESS_PATTERN = R"([a-zA-Z0-9_ ]{3,50}$)";
-	const std::string NAME_PATTERN = R"(^[A-Z][a-zA-Z ]{3,20}$)";
+	const std::string NAME_PATTERN = R"(^[A-Z][a-zA-Z ]{2,20}$)";
 	const std::string ID_PATTERN = R"(^[0-9]+$)";
 	static const std::string DATE_PATTERN;
 	const size_t NUM_VAR = 7;
@@ -55,7 +55,7 @@ public:
 	size_t GetID();
 	bool IsMinor();
 	void Write( std::ostream& );
-	void Read( std::istream& );
+	bool Read( std::istream& );
 };
 
 
