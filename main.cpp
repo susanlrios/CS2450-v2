@@ -1,23 +1,19 @@
-// Main v0.2
+// Main v0.3
 
 // *************************
 // Todo List
 
 // 1. Decided if I want one search function but pass it function pointers
-// 2. Setup the current date stuff in the library class
 // 3. Make it so the user can create a new patron
 // 4. Make it so the program will save the databases at exit
 // 5. Change the book class's check out function to include a patron pointer
 // 7. Change book's ISBN type to string
-// 8. Decide if I only want the patron pointers in the hash map
+// 8. Decide if the patron pointers in the hash map
 // *************************
 
 // *************************
 // Error List
 
-// 1. Improve book class' import error checking
-// 2. change book class' ISBN type to string
-// 3. Fix the current date getter in the patron class
 // 4. Fix the issue with losing database data when running into a save error
 // 5. Fix the clear sreen function so it doesn't use a system call
 // 6. Fix the enum / switch statement in main
@@ -39,7 +35,6 @@ void ClearScreen()
 	system( "cls" );							// look into removing this
 	//std::cout << std::string( 100, '\n' );
 }
-
 
 
 
@@ -84,10 +79,20 @@ int main( int argc, const char * argv[] )
 	fileIn.close();
 	// End load from book database
 
+	// Load from the staus database
+	fileIn.open( statusFileName );
 
-	// Load from the patron-bookCheckout-status database
+	if ( !fileIn.is_open() )
+	{
+		std::cout << "No file found: " << statusFileName << std::endl;
+	}
+	else
+	{
+		library->restorePBStatus( fileIn );
+	}
 
-
+	fileIn.close();
+	// End load from status database
 
 	if ( library->errorsFound() )
 	{
