@@ -9,7 +9,7 @@ Library::Library()
 {
 }
 
-// NOT FINISHED
+// FINISHED
 Library::~Library() 
 {
 	for each (Patron* patron in patrons) 
@@ -24,12 +24,32 @@ Library::~Library()
 }
 
 
-// NOT FINISHED
+// FINISHED
+std::vector<std::string> Library::Split( char* input, char delim = ' ' )
+{
+	std::vector<std::string> splitResult;
+
+	do {
+		char *begin = input;
+
+		while ( *input != delim && *input )
+		{
+			input++;
+		}
+
+		splitResult.push_back( std::string( begin, input ) );
+
+	} while ( *input++ != 0 );
+
+	return splitResult;
+}
+
+
+// FINISHED
+// NOT TESTED
 void Library::setCurrentDate( std::string date )
 {
-	Patron::SetCurrentDate( date );
-
-	// Set the book's current Date
+	Date::SetCurrentDate( date );
 }
 
 
@@ -75,14 +95,57 @@ void Library::createPatrons( std::istream& in )
 	}
 }
 
+
+// FINISHED
+// NOT TESTED
 void Library::restorePBStatus( std::istream& in ) 
 {
+	std::vector<std::string> splitVector;
+	//std::string errorMsg;
+	std::string input;
+
 	// while loop that gets every line
-	// getline
-	// split the data between the commas
-	// search the unordered hash map for the patron with the matching ID
-	// add all of their checked out books to their unordered hash map
-	// update each book that was checked to to a "checked out" status
+	while ( getline( in, input ) )
+	{
+		if ( input == "" ) { continue; }
+
+		// split the data between the commas
+		splitVector = Split( &input[0], ',' );
+
+		// search the unordered hash map for the patron with the matching ID
+		auto patronResults = boolinq::from( patrons )
+			.where( [&splitVector]( Patron* a ) { return std::to_string( a->GetID() ) == splitVector[0]; } )
+			.select( []( Patron* a ) { return a; } )
+			.toVector();
+
+		//if ( patronResults.size() == 0 ) { throw std::logic_error( "Invalid patron with checkout status" ); }
+		patronErrorList.push_back( "Invalid patron with checkout status" );
+
+		splitVector.erase( splitVector.begin() );				// remove the patron's ID from the list
+
+		// Find the book with the matching ISBN
+		auto bookResults = boolinq::from( books )
+			.where( [&splitVector]( Book* a ) { return std::find( splitVector.begin(), splitVector.end(), std::to_string( a->GetISBN() ) ) != splitVector.end(); } )
+			.select( []( Book* a ) { return a; } )
+			.toVector();
+
+		//if ( bookResults.size() == 0 ) { throw std::logic_error( "Patron with no valid books checked out" ); }
+		patronErrorList.push_back( "Patron with no valid books checked out" );
+
+		// add all of their checked out books to their unordered hash map
+		for each ( Book* book in bookResults )
+		{
+			// update each book that was checked to to a "checked out" status
+			if ( book->GetCheckOutStatus() )
+			{
+				book->checkOut();
+			}
+
+			// possible error here if a book is double checked out in the status database
+
+			patronBooks[patronResults.front()].push_back( book );
+		}
+	}
 }
 
 
@@ -149,6 +212,7 @@ void Library::tryCheckout() {
 }
 
 
+// NOT FINISHED
 void Library::writeBooksToDB(std::ostream& out) 
 {
 
@@ -187,15 +251,14 @@ void Library::writePBStatusToDB( std::ostream& out )
 }
 
 
-// NOT FINISHED
+// FINISHED
 bool Library::errorsFound()
 {
-	// include the other errorlists here
-	return patronErrorList.size();
+	return patronErrorList.size() + bookErrorList.size() + checkoutErrorList.size();
 }
 
 
-// NOT FINISHED
+// FINISHED
 void Library::displayErrors( std::ostream& out )
 {
 	for each ( std::string error in patronErrorList )
@@ -204,8 +267,16 @@ void Library::displayErrors( std::ostream& out )
 	}
 
 	// List the book import errors
+	for each ( std::string error in bookErrorList )
+	{
+		out << error << std::endl;
+	}
 
 	// List the PBStatus import errors
+	for each ( std::string error in checkoutErrorList )
+	{
+		out << error << std::endl;
+	}
 }
 
 
