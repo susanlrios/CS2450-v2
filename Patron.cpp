@@ -4,18 +4,13 @@
 #include "Patron.h"
 
 
-
-const std::string Patron::DATE_PATTERN = R"(^([1][0-2]|[0]?[1-9])/([1-2][0-9]|3[0-2]|[0]?[1-9])/((?:19|20)[0-9]{2})$)";
-std::string Patron::_currentDate = "";
-
-
 Patron::Patron()
 {
 	_firstName = "John";
 	_LastName = "Doe";
 	_address = "";
-	_birthDate = CurrentDateTime();
-	_joinDate = CurrentDateTime();
+	_birthDate = Date::GetCurrentDate();
+	_joinDate = Date::GetCurrentDate();
 	_outstandingFees = 0;
 	_ID = 0;
 	_currentDate = "";
@@ -140,7 +135,7 @@ void Patron::SetID( std::string ID )
 
 void Patron::SetCurrentDate( std::string currentDate )
 {
-	if ( currentDate == "" ) { _currentDate = currentDate;  return; }
+	if ( currentDate == "" ) { _currentDate = Date::GetCurrentDate();  return; }
 
 	if ( std::regex_match( currentDate, std::regex( DATE_PATTERN ) ) )
 	{
@@ -150,18 +145,6 @@ void Patron::SetCurrentDate( std::string currentDate )
 	{
 		throw std::logic_error( "Bad argument for current date" );
 	}
-}
-
-
-const std::string Patron::CurrentDateTime() 
-{
-	time_t now = time( 0 );
-	struct tm tstruct;
-	char buffer[80];
-	tstruct = *localtime( &now );
-	strftime( buffer, sizeof( buffer ), "%m/%d/%Y", &tstruct );
-
-	return buffer;
 }
 
 
@@ -211,7 +194,7 @@ bool Patron::IsMinor()
 {
 	std::vector<std::string> splitBirth;
 	std::vector<std::string> splitNow;
-	std::string now = ( _currentDate == "" ) ? CurrentDateTime() : _currentDate;
+	std::string now = ( _currentDate == "" ) ? Date::GetCurrentDate() : _currentDate;
 
 	splitBirth = Split( &_birthDate[0], '/' );
 	splitNow = Split( &now[0], '/' );

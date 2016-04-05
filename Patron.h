@@ -1,4 +1,4 @@
-// Patron v0.5
+// Patron v0.6
 
 #ifndef PAT_H
 #define PAT_H
@@ -7,18 +7,19 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <time.h>
 #include <regex>
+
+#include "Date.h"
 
 
 class Patron
 {
 private:
+	const std::string DATE_PATTERN = R"(^([1][0-2]|[0]?[1-9])/([1-2][0-9]|3[0-2]|[0]?[1-9])/((?:19|20)[0-9]{2})$)";
 	const std::string MONEY_PATTERN = R"(^[0-9]{1,8}(\.[0-9]{1,8})?$)";
 	const std::string ADDRESS_PATTERN = R"([a-zA-Z0-9_ ]{3,50}$)";
 	const std::string NAME_PATTERN = R"(^[A-Z][a-zA-Z ]{2,20}$)";
 	const std::string ID_PATTERN = R"(^[0-9]+$)";
-	static const std::string DATE_PATTERN;
 	const size_t NUM_VAR = 7;
 
 	std::string _firstName;
@@ -29,9 +30,9 @@ private:
 	double _outstandingFees;
 	size_t _ID;
 
-	static std::string _currentDate;
+	std::string _currentDate;
 
-	const std::string CurrentDateTime();
+	//const std::string CurrentDateTime();
 	void SetFirstName( std::string );
 	void SetLastName( std::string );
 	void SetBirthdate( std::string );
@@ -45,7 +46,7 @@ public:
 	~Patron();
 	void SetAddress( std::string );
 	void SetFees( std::string );
-	static void SetCurrentDate( std::string );
+	void SetCurrentDate( std::string );
 	const std::string& GetFirstName();
 	const std::string& GetLastName();
 	const std::string& GetAddress();
