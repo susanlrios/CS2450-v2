@@ -1,4 +1,4 @@
-//The Book class v0.3
+//The Book class v0.4
 
 #ifndef BOOK_H
 #define BOOK_H
@@ -16,7 +16,7 @@ private:
 	int _type;
 	bool _checkedOutStatus = false;
 	std::string _dateCheckedOut;
-	int _ISBN;
+	std::string _ISBN;
 public:
 	Book();
 	~Book();
@@ -28,7 +28,7 @@ public:
 	const int GetType();
 	const bool GetCheckOutStatus();
 	const std::string GetCheckOutDate();
-	const int GetISBN();
+	const std::string GetISBN();
 };
 
 #endif

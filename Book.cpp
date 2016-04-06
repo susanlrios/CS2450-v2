@@ -1,4 +1,4 @@
-//The Book class v0.3
+//The Book class v0.4
 #ifndef BOOK_CPP
 #define BOOK_CPP
 
@@ -53,11 +53,9 @@ void Book::setBookInfo(std::string readlineFromDatabase) {
 		if (readlineFromDatabase[read] == ',') {
 			if (buildStringInt == 0) {
 				_title = buildString;
-				buildString = "";
 			}
 			else if (buildStringInt == 1) {
 				_author = buildString;
-				buildString = "";
 			}
 			else if (buildStringInt == 2) {
 				std::transform(buildString.begin(), buildString.end(), buildString.begin(), ::tolower);
@@ -77,20 +75,15 @@ void Book::setBookInfo(std::string readlineFromDatabase) {
 					_type = 0;
 				}
 			}
+			else if (buildStringInt == 3) {
+				_ISBN = buildString;
+				std::cout << "" << std::endl;
+			}
 			buildStringInt++;
 			buildString = "";
 		}
 		else {
 			buildString = buildString + readlineFromDatabase[read];
-			if (read == readlineFromDatabase.size() - 1) {
-				try {
-					_ISBN = stoi(buildString);
-				}
-				catch (std::exception e) {
-					std::cout << "Failed to convert ISBN, ISBN is being set to 0." << std::endl;
-					_ISBN = 0;
-				}
-			}
 		}
 	}
 }
@@ -115,7 +108,7 @@ const std::string Book::GetCheckOutDate() {
 	return _dateCheckedOut;
 }
 
-const int Book::GetISBN() {
+const std::string Book::GetISBN() {
 	return _ISBN;
 }
 
