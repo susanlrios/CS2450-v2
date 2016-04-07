@@ -1,11 +1,14 @@
-//The Book class v0.6
+//The Book class v0.7
 
 #ifndef BOOK_H
 #define BOOK_H
 
-#include <string>
-#include <iostream>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
 #include <cstdio>
 #include <ctime>
 
@@ -31,6 +34,7 @@ public:
 	const std::string GetCheckOutDate();
 	const std::string GetISBN();
 	const void* GetPatronData();
+	void Write(std::ostream&);
 };
 
 #endif

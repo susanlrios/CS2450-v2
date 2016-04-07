@@ -1,11 +1,9 @@
-//The Book class v0.6
+//The Book class v0.7
+
+#include "Book.h"
+
 #ifndef BOOK_CPP
 #define BOOK_CPP
-
-#include <iostream>
-#include <fstream>
-#include <string>
-#include "Book.h"
 
 Book::Book() {}
 
@@ -116,5 +114,27 @@ const std::string Book::GetISBN() {
 const void* Book::GetPatronData() {
 	return _patronData;
 }
+
+void Book::Write(std::ostream& out) {
+	out << _title << "," << _author << ",";
+	if (_type == 1) {
+		out << "adult";
+	}
+	else if (_type == 2) {
+		out << "child";
+	}
+	else if (_type == 3) {
+		out << "video";
+	}
+	else if (_type == 4) {
+		out << "audio";
+	}
+	else {
+		out << "unknown";
+	}
+	out << "," << _ISBN << std::endl;
+}
+
+
 
 #endif
