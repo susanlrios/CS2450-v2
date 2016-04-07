@@ -1,4 +1,4 @@
-// Main v0.4
+// Main v0.5
 
 // *************************
 // Todo List
@@ -55,6 +55,7 @@ void ClearScreen()
 
 const std::string SearchMenu( Library& library )
 {
+	std::vector<Patron*> results;
 	std::string input = "";
 
 	do
@@ -78,10 +79,26 @@ const std::string SearchMenu( Library& library )
 			// Display all patrons
 			library.displayPatrons( std::cout );
 
-			// Get user input for the desired patron
-			std::cout << "testing";
+			while ( results.size() != 1 )
+			{
+				// Get user input for the desired patron
+				std::cout << std::endl << "Which patron would you like to select? ";
+				getline( std::cin, input );
 
-			// Return the Patron's ID
+				// Return the Patron's ID
+				results = library.FindPatron( input );
+
+				if ( results.size() > 0 )
+				{
+					for each ( auto patron in results )
+					{
+						patron->Display( std::cout );
+					}
+				}
+			}
+
+
+			
 
 			break;
 		}
