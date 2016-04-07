@@ -1,4 +1,4 @@
-// Patron v0.6
+// Patron v0.7
 
 #ifndef PAT_H
 #define PAT_H
@@ -29,15 +29,14 @@ private:
 	std::string _joinDate;
 	double _outstandingFees;
 	size_t _ID;
-
 	std::string _currentDate;
 
-	//const std::string CurrentDateTime();
 	void SetFirstName( std::string );
 	void SetLastName( std::string );
 	void SetBirthdate( std::string );
 	void SetJoinDate( std::string );
 	void SetID( std::string );
+
 	std::vector<std::string> Split( char*, char );
 
 public:
@@ -57,6 +56,7 @@ public:
 	bool IsMinor();
 	void Write( std::ostream& );
 	bool Read( std::istream& );
+	void Display( std::ostream& );
 };
 
 

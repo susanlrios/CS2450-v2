@@ -297,5 +297,15 @@ std::vector<std::string> Patron::Split( char* input, char delim = ' ' )
 }
 
 
+void Patron::Display( std::ostream& out )
+{
+	out << "ID:" << _ID << " " << _firstName << " " << _LastName << " \t" <<
+		//"\tAddress: " << _address << std::endl <<
+		//"\tBirthday: " << _birthDate << std::endl <<
+		//"\tJoin Date: " << _joinDate << std::endl <<
+		"\tAmount Owed: $" << _outstandingFees << std::endl;
+}
+
+
 
 #endif PAT_CPP
