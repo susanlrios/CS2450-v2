@@ -139,7 +139,7 @@ void Library::restorePBStatus( std::istream& in )
 			// update each book that was checked to to a "checked out" status
 			if ( book->GetCheckOutStatus() )
 			{
-				book->checkOut( patronResults.front() );
+				book->checkOut( std::to_string( patronResults.front()->GetID() ) );
 			}
 
 			// possible error here if a book is double checked out in the status database
@@ -189,7 +189,7 @@ void Library::checkout( std::string patronID, std::string bookISBN )
 	// update the book to a "checked out" status
 	if ( bookResults.front()->GetCheckOutStatus() )
 	{
-		bookResults.front()->checkOut( patronResults.front() );
+		bookResults.front()->checkOut( std::to_string( patronResults.front()->GetID() ) );
 	}
 	else
 	{
@@ -201,26 +201,13 @@ void Library::checkout( std::string patronID, std::string bookISBN )
 }
 
 
-void Library::tryCheckout() {
-	for ( int i = 0; i < 2; i++ ) {
-		if ( books[i]->GetCheckOutStatus() ) {
-			patronBooks[patrons[i]].push_back( books[i] );
-		}
-		else {
-			std::cout << "Cannot check out: " << books[i]->GetTitle() << std::endl;
-		}
-	}
-
-	for ( int q = 0; q < patronBooks.size(); q++ ) {
-		std::cout << "Number of books checked out to " << patrons[q]->GetFirstName() << " " << patrons[q]->GetLastName() << " " << patrons[q]->GetID() << ": " << patronBooks[patrons[q]].size() << std::endl;
-	}
-}
-
-
 // NOT FINISHED
 void Library::writeBooksToDB(std::ostream& out) 
 {
-
+	for each ( Book* book in books )
+	{
+		book->Write( out );
+	}
 }
 
 
@@ -253,6 +240,28 @@ void Library::writePBStatusToDB( std::ostream& out )
 			out << std::endl;
 		}
 	}
+}
+
+
+std::vector<Patron*> Library::FindPatron( std::string input )
+{
+	// Find the patron with the matching patronID
+	auto patronResults = boolinq::from( patrons )
+		.where( [input]( Patron* a ) 
+			{ 
+				if ( std::to_string( a->GetID() ) == input ) return true;
+				if ( std::to_string( a->GetFees() ) == input ) return true;
+				if ( a->GetFirstName() + " " + a->GetLastName() == input ) return true;
+				if ( a->GetFirstName() == input ) return true;
+				if ( a->GetLastName() == input ) return true;
+				if ( a->GetBirthDate() == input ) return true;
+				if ( a->GetAddress() == input ) return true;
+				return false; 
+			} )
+		.select( []( Patron* a ) { return a; } )
+		.toVector();
+
+	return patronResults;
 }
 
 
