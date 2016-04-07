@@ -53,6 +53,7 @@ void Library::setCurrentDate( std::string date )
 }
 
 
+// Need to include error checking
 void Library::createBooks(std::istream& in) {
 	std::string str;
 	while (std::getline(in, str)) {
@@ -119,18 +120,18 @@ void Library::restorePBStatus( std::istream& in )
 			.toVector();
 
 		//if ( patronResults.size() == 0 ) { throw std::logic_error( "Invalid patron with checkout status" ); }
-		patronErrorList.push_back( "Invalid patron with checkout status" );
+		if ( patronResults.size() == 0 ) { patronErrorList.push_back( "Invalid patron with checkout status" ); }
 
 		splitVector.erase( splitVector.begin() );				// remove the patron's ID from the list
 
 		// Find the book with the matching ISBN
 		auto bookResults = boolinq::from( books )
-			.where( [&splitVector]( Book* a ) { return std::find( splitVector.begin(), splitVector.end(), std::to_string( a->GetISBN() ) ) != splitVector.end(); } )
+			.where( [&splitVector]( Book* a ) { return std::find( splitVector.begin(), splitVector.end(), a->GetISBN() ) != splitVector.end(); } )
 			.select( []( Book* a ) { return a; } )
 			.toVector();
 
 		//if ( bookResults.size() == 0 ) { throw std::logic_error( "Patron with no valid books checked out" ); }
-		patronErrorList.push_back( "Patron with no valid books checked out" );
+		if ( bookResults.size() == 0 ) { patronErrorList.push_back( "Patron with no valid books checked out" ); }
 
 		// add all of their checked out books to their unordered hash map
 		for each ( Book* book in bookResults )
@@ -138,7 +139,7 @@ void Library::restorePBStatus( std::istream& in )
 			// update each book that was checked to to a "checked out" status
 			if ( book->GetCheckOutStatus() )
 			{
-				book->checkOut();
+				book->checkOut( patronResults.front() );
 			}
 
 			// possible error here if a book is double checked out in the status database
@@ -162,7 +163,7 @@ void Library::checkout( std::string patronID, std::string bookISBN )
 
 	// Find the book with the matching ISBN
 	auto bookResults = boolinq::from( books )
-		.where( [bookISBN]( Book* a ) { return std::to_string( a->GetISBN() ) == bookISBN; } )
+		.where( [bookISBN]( Book* a ) { return a->GetISBN() == bookISBN; } )
 		.select( []( Book* a ) { return a; } )
 		.toVector();
 
@@ -186,7 +187,11 @@ void Library::checkout( std::string patronID, std::string bookISBN )
 	}
 
 	// update the book to a "checked out" status
-	if ( !bookResults.front()->checkOut() )
+	if ( bookResults.front()->GetCheckOutStatus() )
+	{
+		bookResults.front()->checkOut( patronResults.front() );
+	}
+	else
 	{
 		throw std::logic_error( bookResults.front()->GetTitle() + " is already checked out" );
 	}
@@ -198,7 +203,7 @@ void Library::checkout( std::string patronID, std::string bookISBN )
 
 void Library::tryCheckout() {
 	for ( int i = 0; i < 2; i++ ) {
-		if ( books[i]->checkOut() == true ) {
+		if ( books[i]->GetCheckOutStatus() ) {
 			patronBooks[patrons[i]].push_back( books[i] );
 		}
 		else {
@@ -276,6 +281,30 @@ void Library::displayErrors( std::ostream& out )
 	for each ( std::string error in checkoutErrorList )
 	{
 		out << error << std::endl;
+	}
+}
+
+
+// FINISHED
+void Library::displayPatrons( std::ostream& out )
+{
+	out << std::endl << "Patrons:" << std::endl;
+
+	for each ( Patron* patron in patrons )
+	{
+		patron->Display( out );
+		//out << std::endl;
+	}
+}
+
+
+// NOT FINISHED
+void Library::displayBooks( std::ostream& out )
+{
+	for each ( Book* book in books )
+	{
+		//book->Display( out );
+		out << std::endl;
 	}
 }
 

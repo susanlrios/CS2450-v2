@@ -1,4 +1,4 @@
-// Library v0.3
+// Library v0.4
 
 #ifndef LIBRARY_H
 #define LIBRARY_H
@@ -23,9 +23,9 @@ typedef std::pair<Patron*, std::vector<Book*>> patronStatus;
 class Library 
 {
 	private:
+		const size_t MAX_ADULT_CHECKOUT = 5;			// Check these values
+		const size_t MAX_CHILD_CHECKOUT = 2;			// Check these values
 		const int TYPE_CHILD = 2;
-		const size_t MAX_ADULT_CHECKOUT = 5;
-		const size_t MAX_CHILD_CHECKOUT = 2;
 
 		std::unordered_map<Patron*, std::vector<Book*>> patronBooks;
 		std::vector<std::string> checkoutErrorList;
@@ -50,6 +50,8 @@ class Library
 		void writePBStatusToDB(std::ostream&);
 		bool errorsFound();
 		void displayErrors( std::ostream& );
+		void displayPatrons( std::ostream& );
+		void displayBooks( std::ostream& );
 };
 
 
