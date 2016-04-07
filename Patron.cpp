@@ -299,11 +299,18 @@ std::vector<std::string> Patron::Split( char* input, char delim = ' ' )
 
 void Patron::Display( std::ostream& out )
 {
-	out << "ID:" << _ID << " " << _firstName << " " << _LastName << " \t" <<
-		//"\tAddress: " << _address << std::endl <<
-		//"\tBirthday: " << _birthDate << std::endl <<
-		//"\tJoin Date: " << _joinDate << std::endl <<
-		"\tAmount Owed: $" << _outstandingFees << std::endl;
+	const int MAX_WIDTH = 40;
+	int width;
+
+	std::string firstParam = "ID:" + std::to_string( _ID ) + " " + _firstName + " " + _LastName;
+
+	out << "ID:" << _ID << " " << _firstName << " " << _LastName;
+
+	width = ( MAX_WIDTH - firstParam.length() <= 0 ) ? width = 20 : width = MAX_WIDTH - firstParam.length();
+
+	out << std::setw( width );
+
+	out << "\tAmount Owed: $" << _outstandingFees << std::endl;
 }
 
 
