@@ -1,4 +1,4 @@
-//The Book class v0.7
+//The Book class v0.8
 
 #include "Book.h"
 
@@ -9,7 +9,7 @@ Book::Book() {}
 
 Book::~Book() {}
 
-bool Book::checkOut(void* data) {
+bool Book::checkOut(std::string data) {
 	if (_checkedOutStatus == false) {
 		std::time_t rawtime;
 		std::tm* timeinfo;
@@ -35,7 +35,7 @@ bool Book::checkIn() {
 	if (_checkedOutStatus == true) {
 		_dateCheckedOut = "";
 		_checkedOutStatus = false;
-		_patronData = nullptr;
+		_patronData = "";
 		//If it returns true, it successfully checked in the book
 		return true;
 	}
@@ -111,7 +111,7 @@ const std::string Book::GetISBN() {
 	return _ISBN;
 }
 
-const void* Book::GetPatronData() {
+const std::string Book::GetPatronID() {
 	return _patronData;
 }
 
