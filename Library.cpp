@@ -187,7 +187,7 @@ void Library::checkout( std::string patronID, std::string bookISBN )
 	}
 
 	// update the book to a "checked out" status
-	if ( bookResults.front()->GetCheckOutStatus() )
+	if ( !bookResults.front()->GetCheckOutStatus() )
 	{
 		bookResults.front()->checkOut( std::to_string( patronResults.front()->GetID() ) );
 	}
@@ -243,7 +243,8 @@ void Library::writePBStatusToDB( std::ostream& out )
 }
 
 
-std::vector<Patron*> Library::FindPatron( std::string input )
+// NOT TESTED
+std::string Library::FindPatron( std::string input, std::ostream& out )
 {
 	// Find the patron with the matching patronID
 	auto patronResults = boolinq::from( patrons )
@@ -261,7 +262,37 @@ std::vector<Patron*> Library::FindPatron( std::string input )
 		.select( []( Patron* a ) { return a; } )
 		.toVector();
 
-	return patronResults;
+
+	for each ( auto patron in patronResults )
+	{
+		patron->Display( out );
+	}
+
+	if ( patronResults.size() != 1 ) { return "-1"; }
+
+	return std::to_string( patronResults.front()->GetID() );
+}
+
+
+// NOT TESTED
+void Library::ListBooksByPatron( std::string input, std::ostream& out )
+{
+	// Find the patron with the matching patronID
+	auto patronResults = boolinq::from( patrons )
+		.where( [input]( Patron* a ) { return std::to_string( a->GetID() ) == input; } )
+		.select( []( Patron* a ) { return a; } )
+		.toVector();
+
+	out << "Patron: ";
+	patronResults.front()->Display( out );
+	out << std::endl << "Checked-out Books:" << std::endl;
+
+	for each ( Book* book in patronBooks[patronResults.front()] )
+	{
+		out << book->GetTitle() << std::endl <<
+			"\tAuthor: " << book->GetAuthor() << std::endl << 
+			"\tISBN: " << book->GetISBN() << std::endl << std::endl;
+	}
 }
 
 

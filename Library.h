@@ -1,4 +1,4 @@
-// Library v0.5
+// Library v0.6
 
 #ifndef LIBRARY_H
 #define LIBRARY_H
@@ -47,7 +47,8 @@ class Library
 		void writeBooksToDB(std::ostream&);
 		void writePatronsToDB(std::ostream&);
 		void writePBStatusToDB(std::ostream&);
-		std::vector<Patron*> FindPatron( std::string );
+		std::string FindPatron( std::string, std::ostream& );
+		void ListBooksByPatron( std::string, std::ostream& );
 		bool errorsFound();
 		void displayErrors( std::ostream& );
 		void displayPatrons( std::ostream& );
