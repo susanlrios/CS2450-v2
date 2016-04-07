@@ -1,11 +1,10 @@
-// Main v0.5
+// Main v0.6
 
 // *************************
 // Todo List
 
 // 1. Decided if the search function will be passed function pointers
 // 3. Make it so the user can create a new patron
-// 4. Make it so the program will save the book database at exit
 // 5. Change the book class's check out function to include a void pointer
 // 8. Decide if the only patron pointers reside in the hash map
 // *************************
@@ -55,12 +54,15 @@ void ClearScreen()
 
 const std::string SearchMenu( Library& library )
 {
-	std::vector<Patron*> results;
+	std::string patronResult;
+	std::string bookResult;
 	std::string input = "";
 
 	do
 	{
-		std::cout << " Search by patron or by book?" << std::endl <<
+		ClearScreen();
+
+		std::cout << std::endl << " Search by patron or by book?" << std::endl <<
 			"1-Search by book" << std::endl <<
 			"2-Search by Patron" << std::endl <<
 			"3-Return to main menu" << std::endl;
@@ -79,26 +81,34 @@ const std::string SearchMenu( Library& library )
 			// Display all patrons
 			library.displayPatrons( std::cout );
 
-			while ( results.size() != 1 )
-			{
+			
+			do {
 				// Get user input for the desired patron
 				std::cout << std::endl << "Which patron would you like to select? ";
 				getline( std::cin, input );
 
 				// Return the Patron's ID
-				results = library.FindPatron( input );
+				patronResult = library.FindPatron( input, std::cout );
 
-				if ( results.size() > 0 )
-				{
-					for each ( auto patron in results )
-					{
-						patron->Display( std::cout );
-					}
-				}
-			}
+			} while ( patronResult == "-1" );
+
+			ClearScreen();
+			std::cout << std::endl;
+
+			do {
+				// list the books checked out by patron, and return the Book's ISBN
+				library.ListBooksByPatron( patronResult, std::cout );
+
+				// Get user input for the desired patron
+				std::cout << std::endl << "Which book would you like to check-in? ";
+				getline( std::cin, input );
+
+				//try to check in the book entered
+
+			} while ( bookResult == "-1" );
 
 
-			
+
 
 			break;
 		}
@@ -211,6 +221,9 @@ int main( int argc, const char * argv[] )
 				// checkout book
 
 				library->checkout( "0", "98298347" );
+				library->checkout( "0", "92384723" );
+				library->checkout( "0", "0131103628" );
+				library->checkout( "0", "1598634682" );
 
 				break;
 			case listBooks:					// List all books
@@ -286,20 +299,18 @@ int main( int argc, const char * argv[] )
 	// End of code to save patron database
 
 	// Start of code to save the book database
-	/*
-		fileOut.open( bookFileName );
+	fileOut.open( bookFileName );
 
-		if ( !fileOut.is_open() )
-		{
-			std::cout << "Error: could not save file " << bookFileName << std::endl;
-		}
-		else
-		{
-			library->writeBooksToDB( fileOut );
-		}
+	if ( !fileOut.is_open() )
+	{
+		std::cout << "Error: could not save file " << bookFileName << std::endl;
+	}
+	else
+	{
+		library->writeBooksToDB( fileOut );
+	}
 
-		fileOut.close();
-	*/
+	fileOut.close();
 	// End of code to save the book database
 
 	// Start of code to save the checkout status database
