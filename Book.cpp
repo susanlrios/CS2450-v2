@@ -1,4 +1,4 @@
-//The Book class v0.4
+//The Book class v0.5
 #ifndef BOOK_CPP
 #define BOOK_CPP
 
@@ -11,7 +11,7 @@ Book::Book() {}
 
 Book::~Book() {}
 
-bool Book::checkOut() {
+bool Book::checkOut(void* data) {
 	if (_checkedOutStatus == false) {
 		std::time_t rawtime;
 		std::tm* timeinfo;
@@ -23,6 +23,7 @@ bool Book::checkOut() {
 		std::strftime(buffer, 80, "%m/%d/%Y", timeinfo);
 		_dateCheckedOut = buffer;
 		_checkedOutStatus = true;
+		_patronData = data;
 		//If this returns true, then the book can be successfully checked out.
 		return true;
 	}
@@ -36,6 +37,7 @@ bool Book::checkIn() {
 	if (_checkedOutStatus == true) {
 		_dateCheckedOut = "";
 		_checkedOutStatus = false;
+		_patronData = nullptr;
 		//If it returns true, it successfully checked in the book
 		return true;
 	}
@@ -110,6 +112,10 @@ const std::string Book::GetCheckOutDate() {
 
 const std::string Book::GetISBN() {
 	return _ISBN;
+}
+
+const void* Book::GetPatronData() {
+	return _patronData;
 }
 
 #endif
