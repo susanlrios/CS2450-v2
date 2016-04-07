@@ -1,4 +1,4 @@
-//The Book class v0.5
+//The Book class v0.6
 
 #ifndef BOOK_H
 #define BOOK_H

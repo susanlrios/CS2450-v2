@@ -1,4 +1,4 @@
-//The Book class v0.5
+//The Book class v0.6
 #ifndef BOOK_CPP
 #define BOOK_CPP
 
@@ -77,16 +77,15 @@ void Book::setBookInfo(std::string readlineFromDatabase) {
 					_type = 0;
 				}
 			}
-			else if (buildStringInt == 3) {
-				_ISBN = buildString;
-				std::cout << "" << std::endl;
-			}
 			buildStringInt++;
 			buildString = "";
 		}
 		else {
 			buildString = buildString + readlineFromDatabase[read];
 		}
+	}
+	if (buildStringInt == 3) {
+		_ISBN = buildString;
 	}
 }
 
