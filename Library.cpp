@@ -137,7 +137,7 @@ void Library::restorePBStatus( std::istream& in )
 		for each ( Book* book in bookResults )
 		{
 			// update each book that was checked to to a "checked out" status
-			if ( book->GetCheckOutStatus() )
+			if ( !book->GetCheckOutStatus() )
 			{
 				book->checkOut( std::to_string( patronResults.front()->GetID() ) );
 			}
@@ -296,6 +296,32 @@ void Library::ListBooksByPatron( std::string input, std::ostream& out )
 }
 
 
+// NOT TESTED
+void Library::ListOverdueBooks( std::ostream& )
+{
+	// Find the overdue books
+	auto bookResults = boolinq::from( books )
+		.where( []( Book* a ) { return a->Overdue(); } )
+		.select( []( Book* a ) { return a; } )
+		.toVector();
+
+	for each ( Book* book in bookResults )
+	{
+		book->Display( std::cout );
+
+		auto patronResults = boolinq::from( patrons )
+			.where( [book]( Patron* a ) { return std::to_string( a->GetID() ) == book->GetPatronID(); } )
+			.select( []( Patron* a ) { return a; } )
+			.toVector();
+		
+		if ( patronResults.size() != 1 ) { throw std::logic_error( "Book checked out with bad patron ID" ); }
+
+		std::cout << "\tChecked out to Patron - ID:" << patronResults.front()->GetID() << " " <<
+			patronResults.front()->GetFirstName() << " " << patronResults.front()->GetLastName() << std::endl << std::endl;
+	}
+}
+
+
 // FINISHED
 bool Library::errorsFound()
 {
@@ -338,12 +364,12 @@ void Library::displayPatrons( std::ostream& out )
 }
 
 
-// NOT FINISHED
+// FINISHED
 void Library::displayBooks( std::ostream& out )
 {
 	for each ( Book* book in books )
 	{
-		//book->Display( out );
+		book->Display( out );
 		out << std::endl;
 	}
 }
