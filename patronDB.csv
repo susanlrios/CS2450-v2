@@ -1,13 +1,12 @@
-First Name,Last Name,Address,Birth Date,Join Date,Outstanding Balance,ID
 Chris,Doe,1234 Street Name_Orem_UT,4/20/1993,3/26/2016,10,0
 Cory,Doe,1234 Street Name_Orem_UT,4/20/1993,3/26/2016,20,1
 Chase,Doe,1234 Street Name_Orem_UT,4/20/1993,3/26/2016,30,2
 Colton,Doe,1234 Street Name_Orem_UT,4/20/1993,3/26/2016,40,3
 Bad,Guy,1235 Street Name_Orem_UT,abc,3/27/2016,50,10
 Kayla,Doe,1234 Street Name_Orem_UT,4/20/1993,3/26/2016,60,4
-Blake,Doe,1234 Street Name_Orem_UT,4/20/1993,3/26/2016,70,5
-John,Doe,1234 Street Name_Orem_UT,4/20/1993,3/26/2016,80,6
-Michelle,Doe,1234 Street Name_Orem_UT,4/20/1993,3/26/2016,90,7
-Kyle,Doe,1234 Street Name_Orem_UT,4/20/1993,3/26/2016,100,8
+Blake,Smith,1234 Street Name_Orem_UT,4/20/1993,3/26/2016,70,5
+John,Smith,1234 Street Name_Orem_UT,4/20/1993,3/26/2016,80,6
+Michelle,Smith,1234 Street Name_Orem_UT,4/20/1993,3/26/2016,90,7
+Kyle,Smith,1234 Street Name_Orem_UT,4/20/1993,3/26/2016,100,8
 Randy,Doe,1234 Street Name_Orem_UT,4/20/1993,3/26/2016,110,9
 Bad,Guy,1235 Street Name_Orem_UT,4/21/1993,3/27/2016,abc,11
