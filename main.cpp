@@ -1,11 +1,9 @@
-// Main v0.6
+// Main v0.7
 
 // *************************
 // Todo List
 
-// 1. Decided if the search function will be passed function pointers
 // 3. Make it so the user can create a new patron
-// 5. Change the book class's check out function to include a void pointer
 // 8. Decide if the only patron pointers reside in the hash map
 // *************************
 
@@ -13,7 +11,7 @@
 // Error List
 
 // 4. Fix the issue with losing database data when running into a save error
-// 5. Fix the clear sreen function so it doesn't use a system call
+// 6. Book class doesn't save its check-out date, and gets reset each time the program starts
 // *************************
 
 
@@ -116,6 +114,33 @@ const std::string SearchMenu( Library& library )
 
 	return "-1";
 }
+
+
+void SearchPatron( Library& library )
+{
+	std::string patronResult;
+	std::string bookResult;
+	std::string input = "";
+
+	do
+	{
+		ClearScreen();
+
+		std::cout << std::endl << " List of Books Checked-out by Patron" << std::endl << std::endl;
+
+		// call a library function that will list each patron with all of the books they have checked out
+
+		// list the books checked out by patron, and return the Book's ISBN
+		library.ListBooksByPatron( patronResult, std::cout );
+
+
+
+
+		getline( std::cin, input );
+
+	} while ( input != "" );
+}
+
 
 
 
@@ -227,18 +252,34 @@ int main( int argc, const char * argv[] )
 
 				break;
 			case listBooks:					// List all books
+				std::cout << "All Library Books:" << std::endl << std::endl;
+
 				// pass std::cout ref to function to display all books
+				library->displayBooks( std::cout );
+
+				getline( std::cin, input );
 
 				break;
 			case listOverdue:				// List all overdue books
+				std::cout << "All Overdue Books: " << std::endl << std::endl;
+
 				// pass std::cout ref to function
 				// preform a LINQ query on all overdue books
 				// display overdue books
+				library->ListOverdueBooks( std::cout );
+
+				getline( std::cin, input );
 
 				break;
 			case listByPatron:				// List all books checked out by patron
 				// search patron
+
+				std::cout << std::endl;
+
 				// pass std::cout ref to function to display books checked by patron
+				library->ListBooksByPatron( "0", std::cout );
+
+				getline( std::cin, input );
 
 				break;
 			case changeDate:				// Change the current date
