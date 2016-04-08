@@ -1,5 +1,3 @@
-//The Book class v0.8
-
 #include "Book.h"
 
 #ifndef BOOK_CPP
@@ -85,6 +83,9 @@ void Book::setBookInfo(std::string readlineFromDatabase) {
 	if (buildStringInt == 3) {
 		_ISBN = buildString;
 	}
+	else if (buildStringInt >= 4) {
+		throw std::logic_error("Book class did not create successfully.");
+	}
 }
 
 const std::string Book::GetTitle() {
@@ -129,12 +130,77 @@ void Book::Write(std::ostream& out) {
 	else if (_type == 4) {
 		out << "audio";
 	}
-	else {
-		out << "unknown";
-	}
 	out << "," << _ISBN << std::endl;
 }
 
+bool Book::Overdue() {
+	int days = 0;
+	if (_dateCheckedOut == "") {
+		return false;
+	}
+	std::string _storeCurrentDate;
+	_storeCurrentDate = Date::GetCurrentDate();
+	Date::SetCurrentDate(_dateCheckedOut);
+	while (true) {
+		if (Date::GetCurrentDate() == _storeCurrentDate) {
+			break;
+		}
+		else {
+			Date::AddDayToCurrent();
+			days++;
+		}
+	}
+	Date::SetCurrentDate(_storeCurrentDate);
+	if (_type == 1) {
+		if (days >= 14) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else if (_type == 2) {
+		if (days >= 7) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else if (_type == 3) {
+		if (days >= 2) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else if (_type == 4) {
+		if (days >= 3) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
 
+void Book::Display(std::ostream& out) {
+	out << "Title: " <<_title << std::endl;
+	out << "\t" << "Author: " << _author << std::endl;
+	if (_type == 1) {
+		out << "\t" << "Type: " << "adult" << std::endl;
+	}
+	else if (_type == 2) {
+		out << "\t" << "Type: " << "child" << std::endl;
+	}
+	else if (_type == 3) {
+		out << "\t" << "Type: " << "video" << std::endl;
+	}
+	else if (_type == 4) {
+		out << "\t" << "Type: " << "audio" << std::endl;
+	}
+	out << "\t" << "ISBN: " << _ISBN << std::endl << std::endl;
+}
 
 #endif

@@ -1,4 +1,4 @@
-//The Book class v0.8
+//The Book class v0.9
 
 #ifndef BOOK_H
 #define BOOK_H
@@ -11,6 +11,8 @@
 #include <vector>
 #include <cstdio>
 #include <ctime>
+
+#include "Date.h"
 
 class Book {
 private:
@@ -35,6 +37,8 @@ public:
 	const std::string GetISBN();
 	const std::string GetPatronID();
 	void Write(std::ostream&);
+	bool Overdue();
+	void Display(std::ostream&);
 };
 
 #endif
