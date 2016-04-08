@@ -7,16 +7,16 @@ Book::Book() {}
 
 Book::~Book() {}
 
-bool Book::checkOut(std::string data) {
-	if (_checkedOutStatus == false) {
+bool Book::checkOut( std::string data ) {
+	if ( _checkedOutStatus == false ) {
 		std::time_t rawtime;
 		std::tm* timeinfo;
 		char buffer[80];
 
-		std::time(&rawtime);
-		timeinfo = std::localtime(&rawtime);
+		std::time( &rawtime );
+		timeinfo = std::localtime( &rawtime );
 
-		std::strftime(buffer, 80, "%m/%d/%Y", timeinfo);
+		std::strftime( buffer, 80, "%m/%d/%Y", timeinfo );
 		_dateCheckedOut = buffer;
 		_checkedOutStatus = true;
 		_patronData = data;
@@ -30,7 +30,7 @@ bool Book::checkOut(std::string data) {
 }
 
 bool Book::checkIn() {
-	if (_checkedOutStatus == true) {
+	if ( _checkedOutStatus == true ) {
 		_dateCheckedOut = "";
 		_checkedOutStatus = false;
 		_patronData = "";
@@ -43,30 +43,30 @@ bool Book::checkIn() {
 	}
 }
 
-void Book::setBookInfo(std::string readlineFromDatabase) {
+void Book::setBookInfo( std::string readlineFromDatabase ) {
 	std::string buildString;
 	int buildStringInt = 0;
 
-	for (int read = 0; read < readlineFromDatabase.length(); read++) {
-		if (readlineFromDatabase[read] == ',') {
-			if (buildStringInt == 0) {
+	for ( int read = 0; read < readlineFromDatabase.length(); read++ ) {
+		if ( readlineFromDatabase[read] == ',' ) {
+			if ( buildStringInt == 0 ) {
 				_title = buildString;
 			}
-			else if (buildStringInt == 1) {
+			else if ( buildStringInt == 1 ) {
 				_author = buildString;
 			}
-			else if (buildStringInt == 2) {
-				std::transform(buildString.begin(), buildString.end(), buildString.begin(), ::tolower);
-				if (buildString == "adult") {
+			else if ( buildStringInt == 2 ) {
+				std::transform( buildString.begin(), buildString.end(), buildString.begin(), ::tolower );
+				if ( buildString == "adult" ) {
 					_type = 1;
 				}
-				else if (buildString == "child") {
+				else if ( buildString == "child" ) {
 					_type = 2;
 				}
-				else if (buildString == "video") {
+				else if ( buildString == "video" ) {
 					_type = 3;
 				}
-				else if (buildString == "audio") {
+				else if ( buildString == "audio" ) {
 					_type = 4;
 				}
 				else {
@@ -80,11 +80,11 @@ void Book::setBookInfo(std::string readlineFromDatabase) {
 			buildString = buildString + readlineFromDatabase[read];
 		}
 	}
-	if (buildStringInt == 3) {
+	if ( buildStringInt == 3 ) {
 		_ISBN = buildString;
 	}
-	else if (buildStringInt >= 4) {
-		throw std::logic_error("Book class did not create successfully.");
+	else if ( buildStringInt >= 4 ) {
+		throw std::logic_error( "Book class did not create successfully." );
 	}
 }
 
@@ -116,18 +116,18 @@ const std::string Book::GetPatronID() {
 	return _patronData;
 }
 
-void Book::Write(std::ostream& out) {
+void Book::Write( std::ostream& out ) {
 	out << _title << "," << _author << ",";
-	if (_type == 1) {
+	if ( _type == 1 ) {
 		out << "adult";
 	}
-	else if (_type == 2) {
+	else if ( _type == 2 ) {
 		out << "child";
 	}
-	else if (_type == 3) {
+	else if ( _type == 3 ) {
 		out << "video";
 	}
-	else if (_type == 4) {
+	else if ( _type == 4 ) {
 		out << "audio";
 	}
 	out << "," << _ISBN << std::endl;
@@ -135,14 +135,14 @@ void Book::Write(std::ostream& out) {
 
 bool Book::Overdue() {
 	int days = 0;
-	if (_dateCheckedOut == "") {
+	if ( _dateCheckedOut == "" ) {
 		return false;
 	}
 	std::string _storeCurrentDate;
 	_storeCurrentDate = Date::GetCurrentDate();
-	Date::SetCurrentDate(_dateCheckedOut);
-	while (true) {
-		if (Date::GetCurrentDate() == _storeCurrentDate) {
+	Date::SetCurrentDate( _dateCheckedOut );
+	while ( true ) {
+		if ( Date::GetCurrentDate() == _storeCurrentDate ) {
 			break;
 		}
 		else {
@@ -150,33 +150,33 @@ bool Book::Overdue() {
 			days++;
 		}
 	}
-	Date::SetCurrentDate(_storeCurrentDate);
-	if (_type == 1) {
-		if (days >= 14) {
+	Date::SetCurrentDate( _storeCurrentDate );
+	if ( _type == 1 ) {
+		if ( days >= 14 ) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-	else if (_type == 2) {
-		if (days >= 7) {
+	else if ( _type == 2 ) {
+		if ( days >= 7 ) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-	else if (_type == 3) {
-		if (days >= 2) {
+	else if ( _type == 3 ) {
+		if ( days >= 2 ) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-	else if (_type == 4) {
-		if (days >= 3) {
+	else if ( _type == 4 ) {
+		if ( days >= 3 ) {
 			return true;
 		}
 		else {
@@ -185,22 +185,22 @@ bool Book::Overdue() {
 	}
 }
 
-void Book::Display(std::ostream& out) {
-	out << "Title: " <<_title << std::endl;
+void Book::Display( std::ostream& out ) {
+	out << _title << std::endl;
 	out << "\t" << "Author: " << _author << std::endl;
-	if (_type == 1) {
+	if ( _type == 1 ) {
 		out << "\t" << "Type: " << "adult" << std::endl;
 	}
-	else if (_type == 2) {
+	else if ( _type == 2 ) {
 		out << "\t" << "Type: " << "child" << std::endl;
 	}
-	else if (_type == 3) {
+	else if ( _type == 3 ) {
 		out << "\t" << "Type: " << "video" << std::endl;
 	}
-	else if (_type == 4) {
+	else if ( _type == 4 ) {
 		out << "\t" << "Type: " << "audio" << std::endl;
 	}
-	out << "\t" << "ISBN: " << _ISBN << std::endl << std::endl;
+	out << "\t" << "ISBN: " << _ISBN << std::endl;
 }
 
 #endif

@@ -1,4 +1,4 @@
-//The Book class v0.9
+//The Book class v0.10
 
 #ifndef BOOK_H
 #define BOOK_H
@@ -26,9 +26,9 @@ private:
 public:
 	Book();
 	~Book();
-	bool checkOut(std::string);
+	bool checkOut( std::string );
 	bool checkIn();
-	void setBookInfo(std::string);
+	void setBookInfo( std::string );
 	const std::string GetTitle();
 	const std::string GetAuthor();
 	const int GetType();
@@ -36,9 +36,9 @@ public:
 	const std::string GetCheckOutDate();
 	const std::string GetISBN();
 	const std::string GetPatronID();
-	void Write(std::ostream&);
+	void Write( std::ostream& );
 	bool Overdue();
-	void Display(std::ostream&);
+	void Display( std::ostream& );
 };
 
 #endif
