@@ -46,7 +46,7 @@ std::vector<std::string> Library::Split( char* input, char delim = ' ' )
 
 
 // FINISHED
-// NOT TESTED
+// NOT FULLY TESTED
 void Library::setCurrentDate( std::string date )
 {
 	Date::SetCurrentDate( date );
@@ -98,7 +98,7 @@ void Library::createPatrons( std::istream& in )
 
 
 // FINISHED
-// NOT TESTED
+// NOT FULLY TESTED
 void Library::restorePBStatus( std::istream& in ) 
 {
 	std::vector<std::string> splitVector;
@@ -170,7 +170,7 @@ void Library::checkout( std::string patronID, std::string bookISBN )
 	if ( bookResults.size() == 0 ) { throw std::logic_error( "Could not check out book with ISBN: " + bookISBN ); }
 
 	// check to make sure they can check out the book
-	if ( patronResults.front()->IsMinor() && bookResults.front()->GetType() != TYPE_CHILD )
+	if ( patronResults.front()->IsMinor() && bookResults.front()->GetType() != "child" )
 	{
 		throw std::logic_error( "Patron must be an adult to check out this item" );
 	}
@@ -201,7 +201,54 @@ void Library::checkout( std::string patronID, std::string bookISBN )
 }
 
 
-// NOT FINISHED
+// NOT FULLY TESTED
+void Library::checkin( std::string patronID, std::string bookISBN )
+{
+	size_t index = 0;
+
+	// Find the book with the matching ISBN
+	auto bookResults = boolinq::from( books )
+		.where( [bookISBN]( Book* a ) { return a->GetISBN() == bookISBN; } )
+		.select( []( Book* a ) { return a; } )
+		.toVector();
+
+	if ( bookResults.size() == 0 ) { throw std::logic_error( "Could not check in book with ISBN: " + bookISBN ); }
+
+	if ( bookResults.size() > 1 ) { throw std::logic_error( "Could not check in book, too many books with the same ISBN: " + bookISBN ); }
+
+	// update the book to a "checked in" status
+	if ( bookResults.front()->GetCheckOutStatus() )
+	{
+		bookResults.front()->checkIn();
+	}
+	else
+	{
+		throw std::logic_error( bookResults.front()->GetTitle() + " is already checked in" );
+	}
+
+	if ( patronID == "" )
+	{
+		patronID = bookResults.front()->GetPatronID();
+	}
+
+	// Find the patron with the matching patronID
+	auto patronResults = boolinq::from( patrons )
+		.where( [patronID]( Patron* a ) { return std::to_string( a->GetID() ) == patronID; } )
+		.select( []( Patron* a ) { return a; } )
+		.toVector();
+
+	if ( patronResults.size() == 0 ) { throw std::logic_error( "Could not find patron with ID: " + patronID ); }
+
+	while ( patronBooks[patronResults.front()][index] != bookResults.front() && index < patronBooks[patronResults.front()].size() )
+	{
+		index++;
+	} 
+
+	patronBooks[patronResults.front()].erase( patronBooks[patronResults.front()].begin() + index );
+}
+
+
+// FINISHED
 void Library::writeBooksToDB(std::ostream& out) 
 {
 	for each ( Book* book in books )
@@ -243,25 +290,34 @@ void Library::writePBStatusToDB( std::ostream& out )
 }
 
 
-// NOT TESTED
+// NOT FULLY TESTED
 std::string Library::FindPatron( std::string input, std::ostream& out )
 {
+	bool( *contain )( std::string, std::string );
+	contain = contains;
+
 	// Find the patron with the matching patronID
 	auto patronResults = boolinq::from( patrons )
-		.where( [input]( Patron* a ) 
-			{ 
-				if ( std::to_string( a->GetID() ) == input ) return true;
-				if ( std::to_string( a->GetFees() ) == input ) return true;
-				if ( a->GetFirstName() + " " + a->GetLastName() == input ) return true;
-				if ( a->GetFirstName() == input ) return true;
-				if ( a->GetLastName() == input ) return true;
-				if ( a->GetBirthDate() == input ) return true;
-				if ( a->GetAddress() == input ) return true;
-				return false; 
-			} )
+		.where( [input]( Patron* a ) { return std::to_string( a->GetID() ) == input; } )
 		.select( []( Patron* a ) { return a; } )
 		.toVector();
 
+	if ( patronResults.size() == 0 )
+	{
+		// Find the patron with any matching data
+		patronResults = boolinq::from( patrons )
+			.where( [input, contain]( Patron* a ) 
+				{ 
+					std::string temp = a->GetFirstName() + " " + a->GetLastName();
+					if ( std::to_string( a->GetFees() ) == input ) return true;
+					if ( contain( temp, input ) ) return true;
+					if ( a->GetBirthDate() == input ) return true;
+					if ( contain( a->GetAddress(), input )) return true;
+					return false; 
+				} )
+			.select( []( Patron* a ) { return a; } )
+			.toVector();
+	}
 
 	for each ( auto patron in patronResults )
 	{
@@ -274,7 +330,37 @@ std::string Library::FindPatron( std::string input, std::ostream& out )
 }
 
 
-// NOT TESTED
+// NOT FULLY TESTED
+std::string Library::FindBook( std::string bookInfo, std::ostream& out )
+{
+	bool( *contain )( std::string, std::string );
+	contain = contains;
+
+	// Find the book with the matching ISBN
+	auto bookResults = boolinq::from( books )
+		.where( [bookInfo, contain]( Book* a ) 
+			{ 
+				if ( a->GetISBN() == bookInfo ) { return true; }
+				if ( contain( a->GetTitle(), bookInfo ) ) { return true; }
+				if ( contain( a->GetAuthor(), bookInfo ) ) { return true; }
+				if ( contain( a->GetType(), bookInfo ) ) { return true; }
+				return false;
+			} )
+		.select( []( Book* a ) { return a; } )
+		.toVector();
+
+	for each ( Book* book in bookResults )
+	{
+		book->Display( out );
+	}
+
+	if ( bookResults.size() != 1 ) { return "-1"; }
+
+	return bookResults.front()->GetISBN();
+}
+
+
+// NOT FULLY TESTED
 void Library::ListBooksByPatron( std::string input, std::ostream& out )
 {
 	// Find the patron with the matching patronID
@@ -296,8 +382,8 @@ void Library::ListBooksByPatron( std::string input, std::ostream& out )
 }
 
 
-// NOT TESTED
-void Library::ListOverdueBooks( std::ostream& )
+// NOT FULLY TESTED
+void Library::ListOverdueBooks( std::ostream& out )
 {
 	// Find the overdue books
 	auto bookResults = boolinq::from( books )
@@ -307,7 +393,7 @@ void Library::ListOverdueBooks( std::ostream& )
 
 	for each ( Book* book in bookResults )
 	{
-		book->Display( std::cout );
+		book->Display( out );
 
 		auto patronResults = boolinq::from( patrons )
 			.where( [book]( Patron* a ) { return std::to_string( a->GetID() ) == book->GetPatronID(); } )
@@ -316,9 +402,51 @@ void Library::ListOverdueBooks( std::ostream& )
 		
 		if ( patronResults.size() != 1 ) { throw std::logic_error( "Book checked out with bad patron ID" ); }
 
-		std::cout << "\tChecked out to Patron - ID:" << patronResults.front()->GetID() << " " <<
+		out << "\tChecked out to Patron - ID:" << patronResults.front()->GetID() << " " <<
 			patronResults.front()->GetFirstName() << " " << patronResults.front()->GetLastName() << std::endl << std::endl;
 	}
+}
+
+
+// NOT FULLY TESTED
+void Library::ListCheckedOut( std::ostream& out )
+{
+	out << "All Books Currently Checked-out: " << std::endl << std::endl;
+
+	// Find the checked out books
+	auto bookResults = boolinq::from( books )
+		.where( []( Book* a ) { return a->GetCheckOutStatus(); } )
+		.select( []( Book* a ) { return a; } )
+		.toVector();
+
+	for each ( Book* book in bookResults )
+	{
+		book->Display( out );
+		out << std::endl;
+	}
+}
+
+
+// NOT FULLY TESTED
+bool Library::contains( std::string original, std::string strToFind )
+{
+	size_t index = 0;
+
+	while ( tolower( original[index] ) != tolower( strToFind[0] ) && index < original.length() )
+	{
+		index++;
+	}
+
+	for ( size_t i = 0; i < strToFind.length(); i++ )
+	{
+		if ( index >= original.length() ) { return false; }
+
+		if ( tolower( original[index] ) != tolower( strToFind[i] ) ) { return false; }
+
+		index++;
+	}
+
+	return true;
 }
 
 

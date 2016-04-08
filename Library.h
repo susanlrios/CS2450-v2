@@ -1,4 +1,4 @@
-// Library v0.7
+// Library v0.8
 
 #ifndef LIBRARY_H
 #define LIBRARY_H
@@ -35,6 +35,7 @@ class Library
 		std::vector<Book*> books;
 
 		std::vector<std::string> Split( char*, char );
+		static bool contains( std::string, std::string );
 
 	public:
 		Library();
@@ -44,12 +45,15 @@ class Library
 		void createPatrons(std::istream&);
 		void restorePBStatus(std::istream&);
 		void checkout( std::string, std::string );
+		void checkin( std::string, std::string );
 		void writeBooksToDB(std::ostream&);
 		void writePatronsToDB(std::ostream&);
 		void writePBStatusToDB(std::ostream&);
 		std::string FindPatron( std::string, std::ostream& );
+		std::string FindBook( std::string, std::ostream& );
 		void ListBooksByPatron( std::string, std::ostream& );
 		void ListOverdueBooks( std::ostream& );
+		void ListCheckedOut( std::ostream& );
 		bool errorsFound();
 		void displayErrors( std::ostream& );
 		void displayPatrons( std::ostream& );
