@@ -1,4 +1,4 @@
-//The Book class v0.10
+//The Book class v0.11
 
 #ifndef BOOK_H
 #define BOOK_H
@@ -31,7 +31,7 @@ public:
 	void setBookInfo( std::string );
 	const std::string GetTitle();
 	const std::string GetAuthor();
-	const int GetType();
+	const std::string GetType();
 	const bool GetCheckOutStatus();
 	const std::string GetCheckOutDate();
 	const std::string GetISBN();

@@ -96,8 +96,25 @@ const std::string Book::GetAuthor() {
 	return _author;
 }
 
-const int Book::GetType() {
-	return _type;
+const std::string Book::GetType() {
+	switch ( _type )
+	{
+	case 1:
+		return "adult";
+		break;
+	case 2:
+		return "child";
+		break;
+	case 3:
+		return "video";
+		break;
+	case 4:
+		return "audio";
+		break;
+	default:
+		return "-1";
+		break;
+	}
 }
 
 const bool Book::GetCheckOutStatus() {
