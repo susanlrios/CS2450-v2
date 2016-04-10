@@ -1,14 +1,12 @@
-// Library v0.8
+// Library v0.9
 
 #ifndef LIBRARY_H
 #define LIBRARY_H
 
 
 #include <unordered_map>
-#include <algorithm>
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -23,9 +21,8 @@ typedef std::pair<Patron*, std::vector<Book*>> patronStatus;
 class Library 
 {
 	private:
-		const size_t MAX_ADULT_CHECKOUT = 5;			// Check these values
-		const size_t MAX_CHILD_CHECKOUT = 2;			// Check these values
-		const int TYPE_CHILD = 2;
+		const size_t MAX_ADULT_CHECKOUT = 3;
+		const size_t MAX_CHILD_CHECKOUT = 6;
 
 		std::unordered_map<Patron*, std::vector<Book*>> patronBooks;
 		std::vector<std::string> checkoutErrorList;
@@ -54,6 +51,8 @@ class Library
 		void ListBooksByPatron( std::string, std::ostream& );
 		void ListOverdueBooks( std::ostream& );
 		void ListCheckedOut( std::ostream& );
+		const std::string& GetCurrentDate();
+		void AddDayToCurrent();
 		bool errorsFound();
 		void displayErrors( std::ostream& );
 		void displayPatrons( std::ostream& );

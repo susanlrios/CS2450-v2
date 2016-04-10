@@ -46,7 +46,6 @@ std::vector<std::string> Library::Split( char* input, char delim = ' ' )
 
 
 // FINISHED
-// NOT FULLY TESTED
 void Library::setCurrentDate( std::string date )
 {
 	Date::SetCurrentDate( date );
@@ -216,6 +215,11 @@ void Library::checkin( std::string patronID, std::string bookISBN )
 
 	if ( bookResults.size() > 1 ) { throw std::logic_error( "Could not check in book, too many books with the same ISBN: " + bookISBN ); }
 
+	if ( patronID == "" )
+	{
+		patronID = bookResults.front()->GetPatronID();
+	}
+
 	// update the book to a "checked in" status
 	if ( bookResults.front()->GetCheckOutStatus() )
 	{
@@ -224,11 +228,6 @@ void Library::checkin( std::string patronID, std::string bookISBN )
 	else
 	{
 		throw std::logic_error( bookResults.front()->GetTitle() + " is already checked in" );
-	}
-
-	if ( patronID == "" )
-	{
-		patronID = bookResults.front()->GetPatronID();
 	}
 
 	// Find the patron with the matching patronID
@@ -290,7 +289,7 @@ void Library::writePBStatusToDB( std::ostream& out )
 }
 
 
-// NOT FULLY TESTED
+// FINISHED
 std::string Library::FindPatron( std::string input, std::ostream& out )
 {
 	bool( *contain )( std::string, std::string );
@@ -330,7 +329,7 @@ std::string Library::FindPatron( std::string input, std::ostream& out )
 }
 
 
-// NOT FULLY TESTED
+// FINISHED
 std::string Library::FindBook( std::string bookInfo, std::ostream& out )
 {
 	bool( *contain )( std::string, std::string );
@@ -352,6 +351,7 @@ std::string Library::FindBook( std::string bookInfo, std::ostream& out )
 	for each ( Book* book in bookResults )
 	{
 		book->Display( out );
+		out << std::endl;
 	}
 
 	if ( bookResults.size() != 1 ) { return "-1"; }
@@ -360,7 +360,7 @@ std::string Library::FindBook( std::string bookInfo, std::ostream& out )
 }
 
 
-// NOT FULLY TESTED
+// FINISHED
 void Library::ListBooksByPatron( std::string input, std::ostream& out )
 {
 	// Find the patron with the matching patronID
@@ -375,14 +375,13 @@ void Library::ListBooksByPatron( std::string input, std::ostream& out )
 
 	for each ( Book* book in patronBooks[patronResults.front()] )
 	{
-		out << book->GetTitle() << std::endl <<
-			"\tAuthor: " << book->GetAuthor() << std::endl << 
-			"\tISBN: " << book->GetISBN() << std::endl << std::endl;
+		book->Display( out );
+		out << std::endl;
 	}
 }
 
 
-// NOT FULLY TESTED
+// FINISHED
 void Library::ListOverdueBooks( std::ostream& out )
 {
 	// Find the overdue books
@@ -390,6 +389,10 @@ void Library::ListOverdueBooks( std::ostream& out )
 		.where( []( Book* a ) { return a->Overdue(); } )
 		.select( []( Book* a ) { return a; } )
 		.toVector();
+
+	if ( bookResults.size() == 0 ) { out << "There are currently no overdue books" << std::endl; }
+
+	out << std::endl;
 
 	for each ( Book* book in bookResults )
 	{
@@ -400,15 +403,15 @@ void Library::ListOverdueBooks( std::ostream& out )
 			.select( []( Patron* a ) { return a; } )
 			.toVector();
 		
-		if ( patronResults.size() != 1 ) { throw std::logic_error( "Book checked out with bad patron ID" ); }
+		if ( patronResults.size() != 1 ) { throw std::logic_error( "Book checked-out with bad patron ID" ); }
 
-		out << "\tChecked out to Patron - ID:" << patronResults.front()->GetID() << " " <<
+		out << "\tChecked-out to Patron with ID:" << patronResults.front()->GetID() << " " <<
 			patronResults.front()->GetFirstName() << " " << patronResults.front()->GetLastName() << std::endl << std::endl;
 	}
 }
 
 
-// NOT FULLY TESTED
+// FINISHED
 void Library::ListCheckedOut( std::ostream& out )
 {
 	out << "All Books Currently Checked-out: " << std::endl << std::endl;
@@ -427,7 +430,21 @@ void Library::ListCheckedOut( std::ostream& out )
 }
 
 
-// NOT FULLY TESTED
+// FINISHED
+const std::string& Library::GetCurrentDate()
+{
+	return Date::GetCurrentDate();
+}
+
+
+// FINISHED
+void Library::AddDayToCurrent()
+{
+	Date::AddDayToCurrent();
+}
+
+
+// FINISHED
 bool Library::contains( std::string original, std::string strToFind )
 {
 	size_t index = 0;
