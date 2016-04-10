@@ -1,12 +1,10 @@
-// Main v0.8
+// Main v0.9
 
 // *************************
 // Todo List
 
 // 3. Make it so the user can create a new patron
 // 8. Decide if the only patron pointers reside in the hash map
-// 9. Check for any std::cout's in the library class, replace with out
-// 10. Consolidate the search code for books or patrons to their own functions
 // *************************
 
 // *************************
@@ -14,16 +12,15 @@
 
 // 4. Fix the issue with losing database data when running into a save error
 // 6. Book class doesn't save its check-out date, and gets reset each time the program starts
-// 7. Fix the check-in search by book check-in, it's not fully checking in books and it returns an exception
 // *************************
 
 
-
-#include<string>
+#include <stdexcept>
 #include <iostream>
 #include <fstream>
-#include <sstream>
+//#include <sstream>
 #include <vector>
+#include<string>
 
 #include "Library.h"
 
@@ -53,6 +50,77 @@ void ClearScreen()
 }
 
 
+const std::string SearchPatron( Library& library )
+{
+	std::string patronResult = "-1";
+	std::string input;
+
+	ClearScreen();
+
+	// Display all patrons
+	library.displayPatrons( std::cout );
+
+	do {
+		// Get user input for the desired patron
+		std::cout << std::endl << "Type \"back\" to return to the previous menu" << std::endl << "Which patron would you like to select? ";
+		getline( std::cin, input );
+
+		// Return the Patron's ID
+		if ( input != "back" )
+		{
+			patronResult = library.FindPatron( input, std::cout );
+		}
+
+	} while ( patronResult == "-1" && input != "back" );
+
+	return patronResult;
+}
+
+
+const std::string SearchCheckedOutBooks( Library& library, const std::string& patronID = "" )
+{
+	std::string bookResult = "-1";
+	std::string input;
+
+	ClearScreen();
+	std::cout << std::endl;
+
+	// Display all books
+	library.ListCheckedOut( std::cout );
+
+	// Get user input for the desired book
+	do {
+		ClearScreen();
+		std::cout << std::endl;
+
+		// list the books checked out by patron, and return the Book's ISBN
+		if ( patronID == "" )
+		{
+			library.ListCheckedOut( std::cout );
+		}
+		else
+		{
+			library.ListBooksByPatron( patronID, std::cout );
+		}
+
+		// Get user input for the desired patron
+		std::cout << std::endl << "Type \"back\" to return to the previous menu" << std::endl << "Which book would you like to select? ";
+		getline( std::cin, input );
+
+		//try to check in the book entered
+		if ( input != "back" )
+		{
+			std::ofstream temp;
+			bookResult = library.FindBook( input, temp );
+		}
+
+
+	} while ( bookResult == "-1" && input != "back" );
+
+	return bookResult;
+}
+
+
 const std::string SearchMenu( Library& library )
 {
 	std::string patronResult;
@@ -63,7 +131,7 @@ const std::string SearchMenu( Library& library )
 	{
 		ClearScreen();
 
-		std::cout << std::endl << " Search by patron or by book?" << std::endl <<
+		std::cout << std::endl << " Check-In a Book" << std::endl << "Search by patron or by book?" << std::endl <<
 			"1-Search by book" << std::endl <<
 			"2-Search by Patron" << std::endl <<
 			"3-Return to main menu" << std::endl;
@@ -73,73 +141,37 @@ const std::string SearchMenu( Library& library )
 		switch ( stoi( input ) )
 		{
 		case searchByBook:
-			ClearScreen();
-			std::cout << std::endl;
 
-			// Display all books
-			library.ListCheckedOut( std::cout );
+			bookResult = SearchCheckedOutBooks( library );
 
-			// Get user input for the desired book
-			do {
-				ClearScreen();
-				std::cout << std::endl;
+			if ( bookResult == "-1" ) { break; }
 
-				// list the books checked out by patron, and return the Book's ISBN
-				library.ListCheckedOut( std::cout );
-
-				// Get user input for the desired patron
-				std::cout << std::endl << /*"Type \"back\" to go back" << std::endl <<*/ "Which book would you like to check-in? ";
-				getline( std::cin, input );
-
-				//try to check in the book entered
-				std::ofstream temp;
-				bookResult = library.FindBook( input, temp );
-
-			} while ( bookResult == "-1" );
-
-			// try to check out book
+			// try to check in book
 			library.checkin( "", bookResult );
+
+			std::cout << std::endl << "Book Successfully Checked-In" << std::endl;
+			getline( std::cin, input );
 
 			break;
 		case searchByPatron:
-			ClearScreen();
-			std::cout << std::endl;
+			// Search patrons
+			patronResult = SearchPatron( library );
 
-			// Display all patrons
-			library.displayPatrons( std::cout );
+			if ( patronResult == "-1" ) { break; }
 
-			do {
-				// Get user input for the desired patron
-				std::cout << std::endl << "Which patron would you like to select? ";
-				getline( std::cin, input );
+			bookResult = SearchCheckedOutBooks( library, patronResult );
 
-				// Return the Patron's ID
-				patronResult = library.FindPatron( input, std::cout );
+			if ( bookResult == "-1" ) { break; }
 
-			} while ( patronResult == "-1" );
-
-			do {
-				ClearScreen();
-				std::cout << std::endl;
-
-				// list the books checked out by patron, and return the Book's ISBN
-				library.ListBooksByPatron( patronResult, std::cout );
-
-				// Get user input for the desired patron
-				std::cout << "Which book would you like to check-in? ";
-				getline( std::cin, input );
-
-				//try to check in the book entered
-				std::ofstream temp;
-				bookResult = library.FindBook( input, temp );
-
-			} while ( bookResult == "-1" );
-
-			// try to check out book
+			// try to check in book
 			library.checkin( patronResult, bookResult );
+
+			std::cout << std::endl << "Book Successfully Checked-In" << std::endl;
+			getline( std::cin, input );
 
 			break;
 		}
+
 	} while ( input != std::to_string( exitToMain ) );
 
 	return "-1";
@@ -150,7 +182,7 @@ void SearchCheckout( Library& library )
 {
 	std::string bookInput = "";
 	std::string patronResult;
-	std::string bookResult;
+	std::string bookResult = "";
 	std::string input = "";
 
 
@@ -161,37 +193,42 @@ void SearchCheckout( Library& library )
 	{
 		try
 		{
-			// Display all patrons
-			library.displayPatrons( std::cout );
+			patronResult = SearchPatron( library );
+
+			if ( patronResult == "-1" ) { return; }
 
 			do {
+				// list all of the books
+				if ( bookResult == "" )
+				{
+					ClearScreen();
+					std::cout << std::endl;
+
+					library.displayBooks( std::cout );
+				}
+
 				// Get user input for the desired patron
-				std::cout << std::endl << "Which patron would you like check a book out to? ";
+				std::cout << std::endl << "Type \"back\" to return to the previous menu" << std::endl << "Which book would you like to check-out? ";
 				getline( std::cin, input );
 
-				// Return the Patron's ID
-				patronResult = library.FindPatron( input, std::cout );
-
-			} while ( patronResult == "-1" );
-
-			do {
 				ClearScreen();
 				std::cout << std::endl;
 
-				// list all of the books
-				library.displayBooks( std::cout );
+				//std::ofstream temp;
+				if ( input != "back" )
+				{
+					bookResult = library.FindBook( input, std::cout );
+				}
 
-				// Get user input for the desired patron
-				std::cout << "Which book would you like to check-out? ";
-				getline( std::cin, input );
+			} while ( bookResult == "-1" && input != "back" );
 
-				std::ofstream temp;
-				bookResult = library.FindBook( input, temp );
-
-			} while ( bookResult == "-1" );
+			if ( input == "back" ) { return; }
 
 			//try to check out the book
 			library.checkout( patronResult, bookResult );
+
+			std::cout << std::endl << "Book Successfully Checked-Out" << std::endl;
+			getline( std::cin, input );
 		}
 		catch ( const std::exception& error )
 		{
@@ -273,7 +310,7 @@ int main( int argc, const char * argv[] )
 	}
 
     do {
-		std::cout << "Current Date: " << Date::GetCurrentDate() << std::endl << std::endl <<
+		std::cout << std::endl << "Current Date: " << library->GetCurrentDate() << std::endl << std::endl <<
 			"1-Check in book" << std::endl <<
 			"2-Check out book" << std::endl <<
 			"3-List all books" << std::endl <<
@@ -319,7 +356,8 @@ int main( int argc, const char * argv[] )
 
 				break;
 			case listOverdue:				// List all overdue books
-				std::cout << "All Overdue Books: " << std::endl << std::endl;
+				ClearScreen();
+				std::cout << std::endl << "All Overdue Books: " << std::endl;
 
 				// pass std::cout ref to function
 				// preform a LINQ query on all overdue books
@@ -331,22 +369,9 @@ int main( int argc, const char * argv[] )
 				break;
 			case listByPatron:				// List all books checked out by patron
 				// search patron
-				ClearScreen();
-				std::cout << std::endl;
+				patronResult = SearchPatron( *library );
 
-				// ********************************** CLEAN THIS UP **********************************
-				// Display all patrons
-				library->displayPatrons( std::cout );
-
-				do {
-					// Get user input for the desired patron
-					std::cout << std::endl << "Which patron would you like select? ";
-					getline( std::cin, input );
-
-					// Return the Patron's ID
-					patronResult = library->FindPatron( input, std::cout );
-
-				} while ( patronResult == "-1" );
+				if ( patronResult == "-1" ) { break; }
 
 				ClearScreen();
 				std::cout << std::endl;
@@ -379,9 +404,15 @@ int main( int argc, const char * argv[] )
 				break;
 
 			case addDay:				// Add one day to the current date
-				Date::AddDayToCurrent();
+				library->AddDayToCurrent();
 				break;
 			}
+		}
+		catch ( std::invalid_argument& error )
+		{
+			ClearScreen();
+			std::cout << "Please enter a valid input" << std::endl << std::endl;
+			continue;
 		}
 		catch ( const std::exception& error )
 		{
