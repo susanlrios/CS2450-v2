@@ -158,14 +158,9 @@ bool Book::Overdue() {
 	std::string _storeCurrentDate;
 	_storeCurrentDate = Date::GetCurrentDate();
 	Date::SetCurrentDate( _dateCheckedOut );
-	while ( true ) {
-		if ( Date::GetCurrentDate() == _storeCurrentDate ) {
-			break;
-		}
-		else {
-			Date::AddDayToCurrent();
-			days++;
-		}
+	while ( Date::GetCurrentDate() != _storeCurrentDate ) {
+		Date::AddDayToCurrent();
+		days++;
 	}
 	Date::SetCurrentDate( _storeCurrentDate );
 	if ( _type == 1 ) {
@@ -218,6 +213,7 @@ void Book::Display( std::ostream& out ) {
 		out << "\t" << "Type: " << "audio" << std::endl;
 	}
 	out << "\t" << "ISBN: " << _ISBN << std::endl;
+	out << "\t" << "Status: " << ( ( _checkedOutStatus ) ? "Checked-out" : "Available" ) << std::endl;
 }
 
 #endif
