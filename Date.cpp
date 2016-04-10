@@ -100,16 +100,34 @@ void Date::AddDayToCurrent()
 
 void Date::SetCurrentDate( std::string currentDate )
 {
-	if ( currentDate == "" ) { _currentDate = CurrentDateTime();  return; }
+	std::vector<std::string> splitVector;
+	size_t day;
+	size_t month;
+	size_t year;
 
-	if ( std::regex_match( currentDate, std::regex( DATE_PATTERN ) ) )
-	{
-		_currentDate = currentDate;
+	if ( currentDate == "" ) 
+	{ 
+		_currentDate = CurrentDateTime();  
 	}
 	else
 	{
-		throw std::logic_error( "Bad argument for current date" );
+		if ( std::regex_match( currentDate, std::regex( DATE_PATTERN ) ) )
+		{
+			_currentDate = currentDate;
+		}
+		else
+		{
+			throw std::logic_error( "Bad argument for current date" );
+		}
 	}
+
+	splitVector = Split( &_currentDate[0], '/' );
+
+	month = stoi( splitVector[0] );
+	day = stoi( splitVector[1] );
+	year = stoi( splitVector[2] );
+
+	_currentDate = std::to_string( month ) + "/" + std::to_string( day ) + "/" + std::to_string( year );
 }
 
 
@@ -117,7 +135,7 @@ const std::string& Date::GetCurrentDate()
 {
 	if ( _currentDate == "" )
 	{
-		_currentDate = CurrentDateTime();
+		SetCurrentDate( "" );
 		return _currentDate;
 	}
 	else
