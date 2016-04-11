@@ -70,8 +70,17 @@ void Book::setBookInfo( std::string readlineFromDatabase ) {
 					_type = 4;
 				}
 				else {
-					_type = 0;
+					throw std::logic_error("Book class failed to create successfully.");
 				}
+			}
+			else if (buildStringInt == 3) {
+				try {
+					int testISBNToInt = stoi(buildString);
+				}
+				catch (std::exception e) {
+					throw std::logic_error("Book class failed to create successfully.");
+				}
+				_ISBN = buildString;
 			}
 			buildStringInt++;
 			buildString = "";
@@ -80,11 +89,11 @@ void Book::setBookInfo( std::string readlineFromDatabase ) {
 			buildString = buildString + readlineFromDatabase[read];
 		}
 	}
-	if ( buildStringInt == 3 ) {
-		_ISBN = buildString;
+	if ( buildStringInt == 4 ) {
+		_dateCheckedOut = buildString;
 	}
-	else if ( buildStringInt >= 4 ) {
-		throw std::logic_error( "Book class did not create successfully." );
+	else if ( buildStringInt >= 5 ) {
+		throw std::logic_error( "Book class failed to create successfully." );
 	}
 }
 
@@ -147,7 +156,7 @@ void Book::Write( std::ostream& out ) {
 	else if ( _type == 4 ) {
 		out << "audio";
 	}
-	out << "," << _ISBN << std::endl;
+	out << "," << _ISBN << "," << _dateCheckedOut << std::endl;
 }
 
 bool Book::Overdue() {
