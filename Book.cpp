@@ -74,12 +74,6 @@ void Book::setBookInfo( std::string readlineFromDatabase ) {
 				}
 			}
 			else if (buildStringInt == 3) {
-				try {
-					int testISBNToInt = stoi(buildString);
-				}
-				catch (std::exception e) {
-					throw std::logic_error("Book class failed to create successfully.");
-				}
 				_ISBN = buildString;
 			}
 			buildStringInt++;
