@@ -1,4 +1,4 @@
-// Library v0.10
+// Library v0.11
 
 #ifndef LIBRARY_H
 #define LIBRARY_H

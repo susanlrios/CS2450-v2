@@ -65,9 +65,9 @@ void Library::createBooks(std::istream& in) {
 		catch (const std::exception& error) {
 			errorMsg = std::string("Unable to create book with: ") + std::string(books.back()->GetTitle());
 			bookErrorList.push_back(errorMsg);
+			delete(books.back());
+			books.pop_back();
 		}
-		delete(books.back());
-		books.pop_back();
 	}
 }
 
