@@ -54,10 +54,20 @@ void Library::setCurrentDate( std::string date )
 
 // Need to include error checking
 void Library::createBooks(std::istream& in) {
+	std::string errorMsg;
 	std::string str;
+
 	while (std::getline(in, str)) {
-		books.push_back(new Book());
-		books.back()->setBookInfo(str);
+		try {
+			books.push_back(new Book());
+			books.back()->setBookInfo(str);
+		}
+		catch (const std::exception& error) {
+			errorMsg = std::string("Unable to create book with: ") + std::string(books.back()->GetTitle());
+			bookErrorList.push_back(errorMsg);
+		}
+		delete(books.back());
+		books.pop_back();
 	}
 }
 
