@@ -1,4 +1,4 @@
-//The Book class v0.14
+//The Book class v1.1
 
 #ifndef BOOK_H
 #define BOOK_H
@@ -39,6 +39,7 @@ public:
 	void Write( std::ostream& );
 	bool Overdue();
 	void Display( std::ostream& );
+	void DisplayReduced( std::ostream& );
 };
 
 #endif

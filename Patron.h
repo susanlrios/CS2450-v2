@@ -1,4 +1,4 @@
-// Patron v0.8
+// Patron v1.1
 
 #ifndef PAT_H
 #define PAT_H
@@ -18,8 +18,8 @@ class Patron
 private:
 	const std::string DATE_PATTERN = R"(^([1][0-2]|[0]?[1-9])/([1-2][0-9]|3[0-2]|[0]?[1-9])/((?:19|20)[0-9]{2})$)";
 	const std::string MONEY_PATTERN = R"(^[0-9]{1,8}(\.[0-9]{1,8})?$)";
-	const std::string ADDRESS_PATTERN = R"([a-zA-Z0-9_ ]{3,50}$)";
-	const std::string NAME_PATTERN = R"(^[A-Z][a-zA-Z ]{2,20}$)";
+	const std::string ADDRESS_PATTERN = R"(^[a-zA-Z0-9_ ]{3,400}$)";
+	const std::string NAME_PATTERN = R"(^[A-Z][a-zA-Z ]{1,20}$)";
 	const std::string ID_PATTERN = R"(^[0-9]+$)";
 	const size_t NUM_VAR = 7;
 
@@ -32,8 +32,6 @@ private:
 	size_t _ID;
 	std::string _currentDate;
 
-	void SetFirstName( std::string );
-	void SetLastName( std::string );
 	void SetBirthdate( std::string );
 	void SetJoinDate( std::string );
 	void SetID( std::string );
@@ -44,6 +42,8 @@ public:
 	Patron();
 	Patron( std::string, std::string, std::string, std::string, std::string, std::string );
 	~Patron();
+	void SetFirstName( std::string );
+	void SetLastName( std::string );
 	void SetAddress( std::string );
 	void SetFees( std::string );
 	void SetCurrentDate( std::string );

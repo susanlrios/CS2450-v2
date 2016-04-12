@@ -1,4 +1,4 @@
-// Date v0.2
+// Date v1.1
 
 #ifndef DATE_H
 #define DATE_H
@@ -21,7 +21,6 @@ public:
 	static void SetCurrentDate( std::string );
 	static const std::string& GetCurrentDate();
 	static void AddDayToCurrent();
-	//static void operator++( Date& );
 };
 
 

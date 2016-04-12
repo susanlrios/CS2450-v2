@@ -66,15 +66,18 @@ void Book::setBookInfo( std::string readlineFromDatabase ) {
 				else if ( buildString == "video" ) {
 					_type = 3;
 				}
-				else if ( buildString == "audio" ) {
+				else if ( buildString == "dvd" ) {
 					_type = 4;
 				}
 				else {
-					throw std::logic_error("Book class failed to create successfully.");
+					throw std::logic_error( "Book class failed to create successfully." );
 				}
 			}
-			else if (buildStringInt == 3) {
+			else if ( buildStringInt == 3 ) {
 				_ISBN = buildString;
+			}
+			else if ( buildStringInt == 4 ) {
+				_dateCheckedOut = buildString;
 			}
 			buildStringInt++;
 			buildString = "";
@@ -83,10 +86,13 @@ void Book::setBookInfo( std::string readlineFromDatabase ) {
 			buildString = buildString + readlineFromDatabase[read];
 		}
 	}
+	if ( buildStringInt == 3 ) {
+		_ISBN = buildString;
+	}
 	if ( buildStringInt == 4 ) {
 		_dateCheckedOut = buildString;
 	}
-	else if ( buildStringInt >= 5 ) {
+	else if ( buildStringInt > 5 ) {
 		throw std::logic_error( "Book class failed to create successfully." );
 	}
 }
@@ -112,7 +118,7 @@ const std::string Book::GetType() {
 		return "video";
 		break;
 	case 4:
-		return "audio";
+		return "dvd";
 		break;
 	default:
 		return "-1";
@@ -148,9 +154,9 @@ void Book::Write( std::ostream& out ) {
 		out << "video";
 	}
 	else if ( _type == 4 ) {
-		out << "audio";
+		out << "dvd";
 	}
-	out << "," << _ISBN << "," << _dateCheckedOut << std::endl;
+	out << "," << _ISBN << "," << _dateCheckedOut << (( _dateCheckedOut != "" ) ? "," : "") << std::endl;
 }
 
 bool Book::Overdue() {
@@ -213,10 +219,16 @@ void Book::Display( std::ostream& out ) {
 		out << "\t" << "Type: " << "video" << std::endl;
 	}
 	else if ( _type == 4 ) {
-		out << "\t" << "Type: " << "audio" << std::endl;
+		out << "\t" << "Type: " << "dvd" << std::endl;
 	}
 	out << "\t" << "ISBN: " << _ISBN << std::endl;
 	out << "\t" << "Status: " << ( ( _checkedOutStatus ) ? "Checked-out" : "Available" ) << std::endl;
+}
+
+void Book::DisplayReduced( std::ostream& out )
+{
+	out << "ISBN: " << _ISBN << "\t" << _title << std::endl <<
+		"\tStatus: " << ( ( _checkedOutStatus ) ? "Checked-out" : "Available" ) << std::endl;
 }
 
 #endif

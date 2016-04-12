@@ -1,38 +1,33 @@
-// Main v0.9
+/*
+	c++ Group 4
+		Team Lead: Susan Rios
+		QA: Jon Dale
+		Developer: Cameron Brown
+		Developer: Chris Mansfield
 
-// *************************
-// Todo List
+	Library program v1.1
+	Meets all requirements and some additional features
+*/
 
-// 3. Make it so the user can create a new patron
-// 8. Decide if the only patron pointers reside in the hash map
-// *************************
-
-// *************************
-// Error List
-
-// 4. Fix the issue with losing database data when running into a save error
-// 6. Book class doesn't save its check-out date, and gets reset each time the program starts
-// *************************
-
+#define version 1.1
 
 #include <stdexcept>
 #include <iostream>
 #include <fstream>
-//#include <sstream>
 #include <vector>
 #include<string>
 
 #include "Library.h"
 
-enum OptionMain { 
-	checkIN = 1, 
-	checkOUT = 2, 
-	listBooks = 3, 
-	listOverdue = 4, 
-	listByPatron = 5, 
-	changeDate = 6, 
-	addDay = 7, 
-	exitProgram = 8 
+enum OptionMain {
+	checkIN = 1,
+	checkOUT = 2,
+	listBooks = 3,
+	listOverdue = 4,
+	listByPatron = 5,
+	changeDate = 6,
+	addDay = 7,
+	exitProgram = 8
 };
 
 enum OptionSearch {
@@ -45,8 +40,7 @@ enum OptionSearch {
 
 void ClearScreen()
 {
-	system( "cls" );							// look into removing this
-	//std::cout << std::string( 100, '\n' );
+	system( "cls" );
 }
 
 
@@ -310,12 +304,13 @@ int main( int argc, const char * argv[] )
 	}
 
     do {
-		std::cout << std::endl << "Current Date: " << library->GetCurrentDate() << std::endl << std::endl <<
-			"1-Check in book" << std::endl <<
-			"2-Check out book" << std::endl <<
-			"3-List all books" << std::endl <<
-			"4-List all overdue books" << std::endl <<
-			"5-List all books checked out by a patron" << std::endl <<
+		std::cout << std::endl << "Library v" << version << std::endl << 
+			"Current Date: " << library->GetCurrentDate() << std::endl << std::endl <<
+			"1-Check in media" << std::endl <<
+			"2-Check out media" << std::endl <<
+			"3-List all media" << std::endl <<
+			"4-List all overdue media" << std::endl <<
+			"5-List all media checked out by a patron" << std::endl <<
 			"6-Change current date" << std::endl <<
 			"7-Advance the date by one day" << std::endl <<
 			"8-Exit" << std::endl << std::endl <<
@@ -325,16 +320,15 @@ int main( int argc, const char * argv[] )
 
 		try
 		{
-			switch ( stoi( input ) )
+			if ( input == std::to_string( checkIN ) )
 			{
-			case checkIN:					// Check in a book
 				// search book, and see if it's actually checked out
 				// check in
-				std::cout << std::endl << "Checking in a book.";
+				std::cout << std::endl << "Checking in a media item.";
 				SearchMenu( *library );
-
-				break;
-			case checkOUT:					// Check out a book
+			}
+			else if ( input == std::to_string( checkOUT ) )
+			{
 				// list patrons
 				// get user input for patron
 				// search patrons
@@ -342,22 +336,22 @@ int main( int argc, const char * argv[] )
 				// see if patron meets the requirements
 				// see if patron has checked out too many books
 				// checkout book
-				std::cout << std::endl << "Checking out a book.";
+				std::cout << std::endl << "Checking out a media item.";
 				SearchCheckout( *library );
-
-				break;
-			case listBooks:					// List all books
-				std::cout << "All Library Books:" << std::endl << std::endl;
+			}
+			else if ( input == std::to_string( listBooks ) )
+			{
+				std::cout << "All Library Media:" << std::endl << std::endl;
 
 				// pass std::cout ref to function to display all books
 				library->displayBooks( std::cout );
 
 				getline( std::cin, input );
-
-				break;
-			case listOverdue:				// List all overdue books
+			}
+			else if ( input == std::to_string( listOverdue ) )
+			{
 				ClearScreen();
-				std::cout << std::endl << "All Overdue Books: " << std::endl;
+				std::cout << std::endl << "All Overdue Media: " << std::endl;
 
 				// pass std::cout ref to function
 				// preform a LINQ query on all overdue books
@@ -365,9 +359,9 @@ int main( int argc, const char * argv[] )
 				library->ListOverdueBooks( std::cout );
 
 				getline( std::cin, input );
-
-				break;
-			case listByPatron:				// List all books checked out by patron
+			}
+			else if ( input == std::to_string( listByPatron ) )
+			{
 				// search patron
 				patronResult = SearchPatron( *library );
 
@@ -379,9 +373,9 @@ int main( int argc, const char * argv[] )
 				library->ListBooksByPatron( patronResult, std::cout );
 
 				getline( std::cin, input );
-
-				break;
-			case changeDate:				// Change the current date
+			}
+			else if ( input == std::to_string( changeDate ) )
+			{
 				std::cout << "\nPlease enter the current date" << std::endl <<
 					"example: 02/04/2016 or 2/4/2016" << std::endl;
 
@@ -400,12 +394,27 @@ int main( int argc, const char * argv[] )
 						input = "-1";
 					}
 				} while ( input == "-1" );
-
-				break;
-
-			case addDay:				// Add one day to the current date
+			}
+			else if ( input == std::to_string( addDay ) )
+			{
 				library->AddDayToCurrent();
-				break;
+			}
+			else if ( input == std::to_string( exitProgram ) )
+			{
+
+			}
+			else
+			{
+				ClearScreen();
+				// If none of the main menu options have been selected
+				// then attempt a smart search on the info entered
+				if ( !library->SmartSearch( input, std::cout ) )
+				{
+					std::cout << std::endl << "Unable to complete request, type \"help\" at the main menu for more information" << std::endl <<
+						"Press [ENTER] to return to main menu" << std::endl;
+				}
+
+				getline( std::cin, input );
 			}
 		}
 		catch ( std::invalid_argument& error )

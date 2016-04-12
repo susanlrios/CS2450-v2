@@ -145,11 +145,5 @@ const std::string& Date::GetCurrentDate()
 }
 
 
-//void Date::operator++( Date& )
-//{
-//	AddDayToCurrent();
-//}
-
-
 
 #endif DATE_CPP

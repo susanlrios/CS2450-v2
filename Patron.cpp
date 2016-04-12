@@ -269,7 +269,6 @@ bool Patron::Read( std::istream& in )
 	}
 	catch ( const std::exception& error )
 	{
-		//std::string errorMessage = "Could not read patron from the file: " + error.what();
 		throw std::logic_error( error.what() );
 	}
 
@@ -310,7 +309,7 @@ void Patron::Display( std::ostream& out )
 
 	out << std::setw( width );
 
-	out << "\tAmount Owed: $" << _outstandingFees << std::endl;
+	out << "\t" << ( ( IsMinor() ) ? "Child" : "Adult" ) << "\tAmount Owed: $" << _outstandingFees << std::endl;
 }
 
 
