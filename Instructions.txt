@@ -1,0 +1,80 @@
+This library application uses a simple terminal user interface. This makes the application 
+fast and easy to learn. 
+
+!!!!IMPORTANT!!!! 
+The application will only run on Windows devices. The first time the
+application is compiled, you must type _CRT_SECURE_NO_WARNINGS
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
+Upon compiling the application, the Book and Patron database are loaded. Each database is 
+stored in a comma separated values file. The database entries can not contain commas or
+special characters.
+
+Book Database
+The book database is structured with the following column headers: 
+	Title
+	Author/Artist
+	Type
+	ISBN/Barcode Number
+	Check Out Date
+		
+Patron Database
+The patron database is structured with the following column headers:
+	First Name
+	Last Name
+	Address
+	BirthDate
+	Membership Join Date
+	Fees
+	Member ID
+				
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+While in the program, a user has the ability to:
+	1-Check in book
+	2-Check out book
+	3-List all books
+	4-List all overdue books
+	5-List all books checked out by a patron
+	6-Change current date
+	7-Advance the date by one day
+	8-Exit
+			
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*Books can be referenced using title, author or ISBN. Patrons can be referenced using Name
+or ID number.
+
+*Books refers to all library items (books, video, dvd)
+
+Check in book (book or patron)
+	This feature allows the user to check in a book. The user can check in a book by patron
+	or by book. If patron is selected, a user can check in a book entering relevant
+	patron information. Once the patron is selected, the books that patron has selected
+	will be printed. If book is selected, a user can check in a book entering relevant
+	book information
+	
+Check out book
+	This feature allows the user to check out a book. First the user selects the patron
+	that would like to check out the book. Once a patron is selected, the book can be
+	selected. 
+	
+List all books and media
+	This feature allows the user to list all books in the library. Books will be printed 
+	to the console.
+	
+List all overdue books and media
+	This feature allows the user to list all overdue books in the library. Books will be 
+	printed to the console.
+
+List all books checked out by a patron
+	This feature allows the user to list all books checked out by a patron. Relevant 
+	information about the patron must be entered.
+	
+Change current date
+	This feature allows the user to change the current date to a future time. Dates must
+	be formated as MM/DD/YYYY or M/D/YYYY.
+	
+Advance the date by one day
+	This feature allows the user to advance the current date by one day. 
+	
+Exit
+	This feature allows the user to exit the program. Upon exit, the 

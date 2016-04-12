@@ -1,0 +1,37 @@
+Cameron Brown
+
+"I wrote the book class and all associated functions in the library class.
+Specifically, in the library class, the functions that read in and store the data
+in the book class from the database. I also started the base library class, and
+Chris finished it. I wrote as many test cases as I could think of for the book
+class to make sure that it runs smoothly in the program. That is basically what I
+did on this project."
+
+
+Chris Mansfield
+
+Chris wrote the date class, the patron class, the main class, ~90% of the library class.
+Chris was incredibly helpful during this project. He came up with ideas for making the program
+faster by utilizing external libraries. Chris also helped with extensive QA as we crunched
+to get everything completed and turned in. Chris did the majority of the heavy coding and was
+key to our team's success.
+
+
+Jon "Matt" Dale
+
+Jon performed QA for the project. He wrote the test cases. His tests were performed manually
+and through unit tests.
+
+
+Susan Rios
+
+I was the project manager. I was very involved creating all of our documents
+(glacier, wbs, project plan, CRC cards, etc.) I did not do any developing for this
+project. Our team mainly stayed within their role responsibilities. Once I
+finished all of our documents, I was more hands off for the project. In
+retrospect, I should have organized more meetings for the team. These meetings
+were extremely beneficial, and we waited too long before we started having them.
+
+At the end of the project, I was also responsible for the user instructions, the
+example files, compiling team member's contributions, additional project files and 
+maintaining the project plan.
