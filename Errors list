@@ -1,0 +1,26 @@
+Errors found:
+•	Child patron check-out up to 3 items
+    o  	Currently only allows child patron to check out 2 books at a time
+•	Adult patron check-out up to six items
+    o	Currently only allows adult patron to check out 5 books at a time
+•	List of books
+    o	Books status is not currently included (checked-out/available)
+        	Add line to indicate current status of books
+•	When checking out book restate question
+    o	Reads now:  Which patron would you like check a book out to:
+    o	Should read:  Which patron would you like to check a book out to:
+•	Check out book that does not exist:
+    o	Forces back to menu if book misspelled
+        	Restate question if book is misspelled and prompt user to try again
+•	Check-in book
+    o	Forces back to menu if book misspelled
+    	Restate question to user if book is misspelled and prompt user to try again
+•	Check-in book by choosing book
+    o	Does not allow check in of book using this route because no patron has been selected
+        	Check-in book by patron is the only one that is currently functional
+•	Check-out book by patron with no checked-out books
+    o	If the Patron has not books to check out the program is stuck with no option to return to the main menu
+•	Check-out book
+    o	If patron decides to not check out a book there is not route back to the main menu.  They must check out a book to return to the main menu
+•	Return back to current date overdue book list error
+    o	If you advance to a future date, return to the current date, and then prompt the computer for a list of overdue books it is stuck and program must be exited
